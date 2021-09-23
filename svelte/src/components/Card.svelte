@@ -10,10 +10,7 @@
 	import { cubicOut } from 'svelte/easing';
 	import { crossfade } from 'svelte/transition';
 	import { onMount } from 'svelte';
-	// import PartyGlobal from 'party-js';
-	import { party } from '../partyjs.mjs';
-	let some: HTMLButtonElement;
-	party.confetti(some);
+	import party from 'party-js';
 
 	const [send, receive] = crossfade({
 			duration: 150,
@@ -46,6 +43,7 @@
 	let moreDesc = '';
 	let showMore = false;
 	let favButton: HTMLButtonElement;
+	let platforms: any[];
 
 	const BG = 0;
 	const TITLE = 1;
@@ -67,6 +65,7 @@
 
 	async function getGameDetails() {
 		gameData = await window.api.getDetails(gameID);
+		platforms = gameData.parent_platforms;
 		let score = gameData.metacritic;
 
 		if 			(score >= 0 && score <= 49) metaColor = 'red'; 
@@ -184,37 +183,31 @@
 							{/if}
 						</div>
 					</div>
-					<div class="flex justify-around w-full">
-						<div class="text-white my-2">
-							<button bind:this={favButton} class="my-1" on:click={() => party.confetti(favButton)}>
-								<i class="far fa-heart text-2xl"></i>
-							</button>
-							<div class="text-xs my-0.5">
+					<div class="grid grid-cols-3 justify-around w-full my-3">
+						<div class="flex flex-wrap flex-col justify-center transition duration-400 text-white hover:text-red-400 hover:bg-red-200 hover:bg-opacity-20 rounded-xl w-full h-full p-2">
+							<i class="far fa-heart text-2xl self-center"></i>
+							<div class="text-xs my-1">
 								Add to favorites
 							</div>
 						</div>
-						<div class="text-white my-2">
-							<button class="my-1">
-								<i class="fas fa-layer-group text-2xl"></i>
-							</button>
-							<div class="text-xs my-0.5">
+						<div class="flex flex-wrap flex-col justify-center transition duration-400 text-white hover:text-yellow-400 hover:bg-yellow-200 hover:bg-opacity-20 rounded-xl w-full h-full p-2">
+							<i class="fas fa-layer-group text-2xl self-center"></i>
+							<div class="text-xs my-1">
 								Queue game
 							</div>
 						</div>
-						<div class="text-white my-2">
-							<button class="my-1" on:click={() => window.api.openWebsite(gameData.website)}>
-								<i class="fas fa-globe-americas text-2xl transition duration-400 text-white hover:text-blue-400 rounded-full"></i>
-							</button>
-							<div class="text-xs my-0.5">
+						<div class="flex flex-wrap flex-col justify-center transition duration-400 text-white hover:text-blue-400 hover:bg-blue-200 hover:bg-opacity-20 rounded-xl w-full h-full p-2"
+								 on:click={() => window.api.openWebsite(gameData.website)}>
+							<i class="fas fa-globe-americas text-2xl self-center"></i>
+							<div class="text-xs my-1">
 								Visit website
 							</div>
 						</div>
 					</div>
 					<div class="flex flex-col justify-between">
-						<div class="my-2 text-sm text-left overflow-hidden">
-							<div class="my-2 text-base font-bold text-left text-heading">About the game</div>
+						<div class="text-sm text-left overflow-hidden">
+							<div class="text-base font-bold text-left text-heading my-2">About the game</div>
 							{@html lessDesc}
-	
 							{#if showMore}
 								<br/>
 								{@html moreDesc}
@@ -228,11 +221,28 @@
 								Available on
 							</div>
 							<div class="flex flex-wrap content-center space-x-2 mx-4">
-								<i class="fab fa-xbox text-xbox text-xl"></i>
-								<i class="fab fa-playstation text-blue-500 text-xl"></i>
-								<i class="fab fa-windows text-blue-400 text-xl"></i>
-								<i class="fab fa-apple text-white text-xl"></i>
-								<i class="fab fa-android text-green-500 text-xl"></i>
+								{#if gameData.parent_platforms}
+									{#each platforms as platforms}
+										{#if platforms.platform.slug === "xbox"}
+												<i class="fab fa-xbox text-xbox text-xl"></i>
+										{/if}
+										{#if platforms.platform.slug === "playstation"}
+											<i class="fab fa-playstation text-blue-500 text-xl"></i>
+										{/if}
+										{#if platforms.platform.slug === "pc"}
+											<i class="fab fa-windows text-blue-400 text-xl"></i>
+										{/if}
+										{#if platforms.platform.slug === "mac"}
+											<i class="fab fa-apple text-gray-200 text-xl"></i>
+										{/if}
+										{#if platforms.platform.slug === "linux"}
+											<i class="fab fa-linux text-white text-xl"></i>
+										{/if}
+										{#if platforms.platform.slug === "android"}
+											<i class="fab fa-android text-green-500 text-xl"></i>
+										{/if}
+									{/each}
+								{/if}
 							</div>
 						</div>
 					</div>
