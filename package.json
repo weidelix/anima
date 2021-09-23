@@ -3,16 +3,13 @@
 	"productName": "electron-test",
 	"version": "1.0.0",
 	"description": "My Electron application description",
-	"main": "dist/main.js",
+	"main": "./dist/main.js",
 	"scripts": {
-		"start": "cls && tsc -p electron/tsconfig.json && concurrently \"npm:svelte-dev\" \"electron-forge start\"",
+		"start": "cls && electron-forge start",
 		"package": "electron-forge package",
 		"make": "electron-forge make",
 		"publish": "electron-forge publish",
 		"lint": "echo \"No linting configured\"",
-		"svelte-build": "rollup -c",
-		"svelte-dev": "rollup -c -w",
-		"svelte-start": "sirv public --no-clear",
 		"check": "svelte-check --tsconfig ./tsconfig.json"
 	},
 	"keywords": [],
@@ -45,6 +42,18 @@
 					"name": "@electron-forge/maker-rpm",
 					"config": {}
 				}
+			],
+			"plugins": [
+				[
+					"@electron-forge/plugin-webpack",
+					{
+						"mainConfig": "./webpack.main.config.js",
+						"renderer": {
+							"config": "./webpack.renderer.config.js",
+							"entryPoints": []
+						}
+					}
+				]
 			]
 		}
 	},
@@ -55,7 +64,6 @@
 		"electron-squirrel-startup": "^1.0.0",
 		"node-sass": "^6.0.1",
 		"party-js": "^2.0.1",
-		"sass": "^1.39.2",
 		"sirv-cli": "^1.0.0"
 	},
 	"devDependencies": {
@@ -64,33 +72,40 @@
 		"@electron-forge/maker-rpm": "^6.0.0-beta.61",
 		"@electron-forge/maker-squirrel": "^6.0.0-beta.61",
 		"@electron-forge/maker-zip": "^6.0.0-beta.61",
-		"@rollup/plugin-commonjs": "^17.0.0",
-		"@rollup/plugin-node-resolve": "^11.0.0",
-		"@rollup/plugin-typescript": "^8.0.0",
+		"@electron-forge/plugin-webpack": "^6.0.0-beta.61",
 		"@tsconfig/svelte": "^2.0.0",
+		"@types/node": "^16.9.6",
 		"@typescript-eslint/eslint-plugin": "^4.31.1",
 		"@typescript-eslint/parser": "^4.31.1",
 		"autoprefixer": "^10.3.4",
-		"cssnano": "^5.0.8",
+		"clean-webpack-plugin": "^4.0.0",
+		"cross-env": "^7.0.3",
+		"css-loader": "^6.3.0",
 		"electron": "14.0.0",
 		"eslint": "^7.32.0",
-		"eslint-config-standard": "^16.0.3",
 		"eslint-plugin-import": "^2.24.2",
 		"eslint-plugin-node": "^11.1.0",
 		"eslint-plugin-promise": "^5.1.0",
+		"file-loader": "^6.2.0",
+		"html-webpack-plugin": "^5.3.2",
+		"mini-css-extract-plugin": "^2.3.0",
+		"optimize-css-assets-webpack-plugin": "^6.0.1",
 		"postcss": "^8.3.6",
 		"postcss-load-config": "^3.1.0",
-		"rollup": "^2.3.4",
-		"rollup-plugin-css-only": "^3.1.0",
-		"rollup-plugin-livereload": "^2.0.0",
-		"rollup-plugin-scss": "^2.6.1",
-		"rollup-plugin-svelte": "^7.0.0",
-		"rollup-plugin-terser": "^7.0.0",
+		"postcss-loader": "^6.1.1",
+		"sass": "^1.42.1",
+		"sass-loader": "^12.1.0",
 		"svelte": "^3.0.0",
 		"svelte-check": "^2.0.0",
+		"svelte-loader-hot": "^0.3.1",
 		"svelte-preprocess": "^4.9.4",
 		"tailwindcss": "^2.2.15",
+		"terser-webpack-plugin": "^5.2.4",
+		"ts-loader": "^9.2.6",
+		"ts-node": "^10.2.1",
 		"tslib": "^2.0.0",
-		"typescript": "4.3.5"
+		"typescript": "4.3.5",
+		"webpack": "^5.53.0",
+		"webpack-cli": "^4.8.0"
 	}
 }

@@ -42,7 +42,7 @@
 	let lessDesc = '';
 	let moreDesc = '';
 	let showMore = false;
-	let favButton: HTMLButtonElement;
+	let favButton: HTMLDivElement;
 	let platforms: any[];
 
 	const BG = 0;
@@ -80,10 +80,6 @@
 		showMore = !showMore;
 	}
 </script>
-
-<svelte:head>
-	<!-- <script defer src="https://cdn.jsdelivr.net/npm/party-js@latest/bundle/party.min.js"></script> -->
-</svelte:head>
 
 <svelte:body on:keydown={closeDetailsPage}/>
 
@@ -184,7 +180,8 @@
 						</div>
 					</div>
 					<div class="grid grid-cols-3 justify-around w-full my-3">
-						<div class="flex flex-wrap flex-col justify-center transition duration-400 text-white hover:text-red-400 hover:bg-red-200 hover:bg-opacity-20 rounded-xl w-full h-full p-2">
+						<div bind:this={favButton} class="flex flex-wrap flex-col justify-center transition duration-400 text-white hover:text-red-400 hover:bg-red-200 hover:bg-opacity-20 rounded-xl w-full h-full p-2"
+								 on:click={() => party.confetti(favButton)}>
 							<i class="far fa-heart text-2xl self-center"></i>
 							<div class="text-xs my-1">
 								Add to favorites
