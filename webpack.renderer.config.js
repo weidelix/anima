@@ -2,14 +2,12 @@ const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const Preprocess = require('svelte-preprocess');
-const WebpackDevServer = require('webpack-dev-server');
-const Webpack = require('webpack');
 
 const mode = process.env.NODE_ENV || 'development';
 const prod = mode === 'production';
-const sveltePath = path.resolve('node_modules', 'svelte');
 
 /**
  * Should source maps be generated alongside your production bundle? This will expose your raw source code, so it's
@@ -25,12 +23,10 @@ const sourceMapsInProduction = false;
 let stylesheets = ['/svelte/styles/index.scss'];
 
 const config = {
-	entry: {
-		bundle: [
-			// Note: Paths in the `stylesheets` variable will be added here automatically
-			'/svelte/src/renderer.ts'
-		],
-	},
+	// entry: [
+	// 	// Note: Paths in the `stylesheets` variable will be added here automatically
+	// 	'/svelte/src/renderer.ts'
+	// ],
 	resolve: {
 		alias: {
 			// Note: Additional aliases will be loaded automatically = `tsconfig.compilerOptions.paths`
@@ -40,8 +36,8 @@ const config = {
 		mainFields: ['svelte', 'browser', 'module', 'main'],
 	},
 	output: {
-		path: path.join(__dirname, '/public/build'),
-		filename: '[name].js',
+		// path: path.join(__dirname, '/public/build'),
+		// filename: '[name].js',
 	},
 	module: {
 		rules: [
@@ -86,17 +82,40 @@ const config = {
 					'postcss-loader'
 				],
 			},
+			// Add support for native node modules
 			{
-				test: /\.ts$/,
-				use: 'ts-loader',
-				exclude: /node_modules/,
+				// We're specifying native_modules in the test because the asset relocator loader generates a
+				// "fake" .node file which is really a cjs file.
+				test: /native_modules\/.+\.node$/,
+				use: 'node-loader',
+			},
+			{
+				test: /\.(m?js|node)$/,
+				parser: { amd: false },
+				use: {
+					loader: '@vercel/webpack-asset-relocator-loader',
+					options: {
+						outputAssetBase: 'native_modules',
+					},
+				},
+			},
+			{
+				test: /\.tsx?$/,
+				exclude: /(node_modules|\.webpack)/,
+				use: {
+					loader: 'ts-loader',
+					options: {
+						transpileOnly: true
+					}
+				}
 			},
 		],
 	},
 	mode, 
 	plugins: [
+		new ForkTsCheckerWebpackPlugin(),
 		new MiniCssExtractPlugin({
-			filename: 'bundle.css',
+			// filename: 'bundle.css',
 		}),
 	],
 	optimization: {
@@ -180,7 +199,6 @@ if (prod) {
 	// Minify and treeshake JS
 	config.optimization.minimizer.push(
 		new TerserPlugin({
-			sourceMap: sourceMapsInProduction,
 			extractComments: false,
 		})
 	);
