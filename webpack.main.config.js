@@ -9,7 +9,7 @@ const config = {
 	// 		preload: './electron/preload.ts'
 	// },
 	// Note: Paths in the `stylesheets` variable will be added here automatically,
-	entry: './svelte/index.ts',
+	entry: './electron/index.ts',
 	resolve: {
 		// alias: {
 		// 	// Note: Additional aliases will be loaded automatically = `tsconfig.compilerOptions.paths`

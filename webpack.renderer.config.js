@@ -36,7 +36,7 @@ const config = {
 		mainFields: ['svelte', 'browser', 'module', 'main'],
 	},
 	output: {
-		// path: path.join(__dirname, '/public/build'),
+		// path: path.join(__dirname, '.webpack/renderer/main_window'),
 		// filename: '[name].js',
 	},
 	module: {
@@ -115,7 +115,7 @@ const config = {
 	plugins: [
 		new ForkTsCheckerWebpackPlugin(),
 		new MiniCssExtractPlugin({
-			// filename: 'bundle.css',
+			filename: 'bundle.css',
 		}),
 	],
 	optimization: {

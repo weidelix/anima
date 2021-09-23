@@ -72,7 +72,10 @@
 	</main>
 </div>
 
-<style>
+<style lang="postcss">
+	@tailwind base;
+	@tailwind components;
+	@tailwind utilities;
 	@import '@fortawesome/fontawesome-free/css/all.min.css';
 
 	main {
