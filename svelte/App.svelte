@@ -44,7 +44,7 @@
 		</h1>
 		<div class="flex flex-wrap flex-row content-center justify-end h-10">
 			<div class="h-full">
-				<button bind:this={walapa} on:click={() => party.confetti(walapa)} class="h-full">
+				<button bind:this={walapa} on:click={() => party.sparkles(walapa)} class="h-full">
 					<i class="fas fa-gamepad text-xl transition duration-400 text-white hover:text-green-400 mx-3"></i>
 				</button>
 			</div>
