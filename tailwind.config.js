@@ -1,8 +1,9 @@
-const colors = require('tailwindcss/colors');
+const mode = process.env.NODE_ENV || 'development';
+const prod = mode === 'production';
 
 const config = {
 	purge: {
-		// enabled: true,
+		enabled: prod,
 		content: ["./src/**/*.{html,js,svelte,ts}"],
 	},
 	theme: {

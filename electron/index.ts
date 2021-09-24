@@ -2,7 +2,7 @@ import { app, BrowserWindow, ipcMain, shell } from 'electron';
 import * as url from 'url';
 import * as path from 'path';
 
-const env = process.env.NODE_ENV || 'development';
+const prod = false;
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) { // eslint-disable-line global-require
@@ -28,7 +28,12 @@ const createWindow = () => {
   }));
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  if (prod) {
+    mainWindow.removeMenu();
+    mainWindow.webContents.closeDevTools();
+  } else {
+    mainWindow.webContents.openDevTools();
+  }
 };
 
 // This method will be called when Electron has finished

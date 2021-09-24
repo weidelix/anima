@@ -5,6 +5,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import Card, { hasMaximizedCard } from '../components/Card.svelte';
+	import quick from '../Quicksort';
 
 	let popularGames : any[] = []; 
 	let recentGames : any[] = []; 

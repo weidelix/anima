@@ -6,10 +6,12 @@
 	import { hasMaximizedCard } from './components/Card.svelte';
 	import HomePage from './Page/HomePage.svelte';
 	import SearchPage from './Page/SearchPage.svelte';
+	import party from 'party-js';
 	
 	let searchQuery = '';
 	let isSearching = false;
 	let inputElement: HTMLInputElement;
+	let walapa: HTMLButtonElement;
 
 	function enableSearch(e: KeyboardEvent | MouseEvent)
 	 {
@@ -38,14 +40,13 @@
 	<div class="flex px-5 py-5 w-full bg-main-color shadow 
 	            justify-between sticky top-0" style="margin-bottom: 1rem;">
 		<h1 class="text-white text-2xl text-left font-main">
-			<!-- <i class="fas fa-heart"></i>
-			<i class="fas fa-times"></i>
-			<i class="fas fa-robot"></i> -->
-			err.io
+			<span class="text-orange">hot</span>.dog
 		</h1>
 		<div class="flex flex-wrap flex-row content-center justify-end h-10">
 			<div class="h-full">
-				<i class="fas fa-gamepad text-xl transition duration-400 text-white hover:text-green-400 mx-3 h-full"></i>
+				<button bind:this={walapa} on:click={() => party.confetti(walapa)} class="h-full">
+					<i class="fas fa-gamepad text-xl transition duration-400 text-white hover:text-green-400 mx-3"></i>
+				</button>
 			</div>
 			<div class="w-50 h-full">
 				<input bind:this={inputElement} bind:value={searchQuery}
@@ -77,7 +78,7 @@
 	</main>
 </div>
 
-<style lang="postcss">
+<style>
 	@import '@fortawesome/fontawesome-free/css/all.min.css';
 
 	main {
