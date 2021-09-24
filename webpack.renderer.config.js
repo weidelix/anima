@@ -21,12 +21,10 @@ const sourceMapsInProduction = false;
  * styles will always afpear last in the bundle.
  */
 
-// Note: Paths in the `stylesheets` variable will be added here automatically
-let stylesheets = ['./svelte/styles/index.scss'];
-
 const config = {
 	entry: [
-		'./svelte/renderer.ts'
+		'./svelte/renderer.ts',
+		'./svelte/styles/index.scss'
 	],
 	resolve: {
 		alias: {
@@ -124,29 +122,6 @@ const config = {
 	},
 	devtool: prod && !sourceMapsInProduction ? false : 'source-map',
 };
-
-// Add stylesheets to the build
-if (Array.isArray(stylesheets) || typeof stylesheets === 'string') {
-	if (!Array.isArray(stylesheets)) {
-		stylesheets = [stylesheets];
-	}
-
-	// Make sure our entry bundle is in the correct format
-	if (typeof config.entry === 'object' && !Array.isArray(config.entry)) {
-		if (typeof config.entry.bundle !== 'undefined') {
-			// Convert the bundle to an array if necessary
-			if (!Array.isArray(config.entry.bundle)) {
-				config.entry.bundle = [config.entry.bundle];
-			}
-
-			// Add to the beginning of the bundle using unshift
-			config.entry.bundle.unshift.apply(
-				config.entry.bundle,
-				stylesheets
-			);
-		}
-	}
-}
 
 // Load path mapping = tsconfig
 const tsconfigPath = path.resolve(__dirname, 'tsconfig.json');

@@ -18,7 +18,7 @@
 <div>
 	<div class="flex flex-col space-y-4">
 		<div>
-			<div class="text-white text-left font-bold text-2xl my-2">
+			<div class="text-white text-left font-main text-2xl my-2">
 				Popular <i class="fas fa-fire-alt text-orange"></i>
 			</div>
 			<div class="sc flex {$hasMaximizedCard ? 'space-x-0' : 'space-x-2'} content-start overflow-x-scroll">
@@ -29,7 +29,7 @@
 		</div>
 	
 		<div>
-			<div class="text-white text-left font-bold text-2xl my-2">
+			<div class="text-white text-left font-main text-2xl my-2">
 				Big Releases <i class="fas fa-meteor text-yellow-400"></i>
 			</div>
 			<div class="sc flex {$hasMaximizedCard ? 'space-x-0' : 'space-x-2'} content-start overflow-x-scroll">

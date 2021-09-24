@@ -1,3 +1,4 @@
+const CopyPlugin = require("copy-webpack-plugin");
 const path = require('path');
 
 const mode = process.env.NODE_ENV || 'development';
@@ -50,7 +51,14 @@ const config = {
 			},
 		],
 	},
-	mode
+	mode,
+	plugins: [
+		new CopyPlugin({
+			patterns: [
+				{ from: path.join(__dirname, '/svelte/index.html'), to: path.join(__dirname, '/.webpack/index.html') }
+			]
+		}),
+	]
 };
 
 module.exports = config;
