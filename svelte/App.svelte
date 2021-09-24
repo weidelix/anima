@@ -27,16 +27,21 @@
 	}
 </script>
 
+<svelte:head>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fredoka+One">
+</svelte:head>
+
 <svelte:body on:keydown={closeSearchPage}/>
 
 <!-- Bar -->
 <div class="sc flex flex-col bg-main-color h-screen {$hasMaximizedCard ? 'overflow-hidden' : 'overflow-y-auto'}">
 	<div class="flex px-5 py-5 w-full bg-main-color shadow 
 	            justify-between sticky top-0" style="margin-bottom: 1rem;">
-		<h1 class="text-white text-2xl text-left">
-			<i class="fas fa-heart"></i>
+		<h1 class="text-white text-2xl text-left font-main">
+			<!-- <i class="fas fa-heart"></i>
 			<i class="fas fa-times"></i>
-			<i class="fas fa-robot"></i>
+			<i class="fas fa-robot"></i> -->
+			err.io
 		</h1>
 		<div class="flex flex-wrap flex-row content-center justify-end h-10">
 			<div class="h-full">
@@ -45,7 +50,7 @@
 			<div class="w-50 h-full">
 				<input bind:this={inputElement} bind:value={searchQuery}
 							 class="bg-main-color outline-none align-middle w-full h-full p-3 border-b-2 
-											transition duration-400 text-sm border-transparent focus:border-green-400 text-white" 
+											transition duration-400 text-sm border-transparent focus:border-green-400 text-white"
 							 placeholder="Search" 
 							 on:keydown={enableSearch} 
 							 on:mousedown={enableSearch} 
@@ -73,9 +78,6 @@
 </div>
 
 <style lang="postcss">
-	@tailwind base;
-	@tailwind components;
-	@tailwind utilities;
 	@import '@fortawesome/fontawesome-free/css/all.min.css';
 
 	main {

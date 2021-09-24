@@ -3,13 +3,12 @@
 	"productName": "electron-test",
 	"version": "1.0.0",
 	"description": "My Electron application description",
-	"main": ".webpack/main/main.js",
+	"main": ".webpack/index.js",
 	"scripts": {
 		"start": "cls && electron-forge start",
-		"package": "electron-forge package",
-		"make": "electron-forge make",
-		"publish": "electron-forge publish",
-		"lint": "echo \"No linting configured\"",
+		"package": "cross-env NODE_ENV=production && electron-forge package",
+		"make": "cross-env NODE_ENV=production && electron-forge make",
+		"publish": "cross-env NODE_ENV=production &&  electron-forge publish",
 		"check": "svelte-check --tsconfig ./tsconfig.json"
 	},
 	"keywords": [],
@@ -50,17 +49,7 @@
 						"mainConfig": "./webpack.main.config.js",
 						"renderer": {
 							"config": "./webpack.renderer.config.js",
-							"entryPoints": [
-								{
-									"preload": {
-										"js": "./svelte/preload.ts"
-									},
-									"html": "./svelte/index.html",
-									"js": "./svelte/renderer.ts",
-									"scss": "./svelte/index.scss",
-									"name": "main_window"
-								}
-							]
+							"entryPoints": [ ]
 						}
 					}
 				]

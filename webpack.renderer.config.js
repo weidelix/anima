@@ -20,13 +20,14 @@ const sourceMapsInProduction = false;
  * supported. The order of this array is important, as the order of outputted styles will match. Svelte component
  * styles will always afpear last in the bundle.
  */
-let stylesheets = ['/svelte/styles/index.scss'];
+
+// Note: Paths in the `stylesheets` variable will be added here automatically
+let stylesheets = ['./svelte/styles/index.scss'];
 
 const config = {
-	// entry: [
-	// 	// Note: Paths in the `stylesheets` variable will be added here automatically
-	// 	'/svelte/src/renderer.ts'
-	// ],
+	entry: [
+		'./svelte/renderer.ts'
+	],
 	resolve: {
 		alias: {
 			// Note: Additional aliases will be loaded automatically = `tsconfig.compilerOptions.paths`
@@ -36,8 +37,8 @@ const config = {
 		mainFields: ['svelte', 'browser', 'module', 'main'],
 	},
 	output: {
-		// path: path.join(__dirname, '.webpack/renderer/main_window'),
-		// filename: '[name].js',
+		path: path.join(__dirname, './.webpack/build'),
+		filename: 'bundle.js',
 	},
 	module: {
 		rules: [

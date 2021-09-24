@@ -6,6 +6,9 @@ const config = {
 		content: ["./src/**/*.{html,js,svelte,ts}"],
 	},
 	theme: {
+		fontFamily: {
+			'main': '"Fredoka One"'
+		},
 		textColor: theme => ({
 			...theme('colors'),
 			'orange': '#fc692f',

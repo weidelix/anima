@@ -1,24 +1,22 @@
 const path = require('path');
 
-// const mode = process.env.NODE_ENV || 'development';
+const mode = process.env.NODE_ENV || 'development';
 
 const config = {
-	// entry: {
-	// 		// Note: Paths in the `stylesheets` variable will be added here automatically
-	// 		index: './electron/index.ts',
-	// 		preload: './electron/preload.ts'
-	// },
-	// Note: Paths in the `stylesheets` variable will be added here automatically,
-	entry: './electron/index.ts',
+	entry: {
+			index: './electron/index.ts',
+			preload: './electron/preload.ts'
+	},
 	resolve: {
 		// alias: {
-		// 	// Note: Additional aliases will be loaded automatically = `tsconfig.compilerOptions.paths`
+		// Note: Additional aliases will be loaded automatically = `tsconfig.compilerOptions.paths`
 		// 	svelte: path.resolve('node_modules', 'svelte'),
 		// },
 		extensions: ['.js', '.ts', '.jsx', '.tsx', '.css', '.json'],
 		// mainFields: ['svelte', 'browser', 'module', 'main'],
 	},
 	output: {
+		path: path.join(__dirname, '/.webpack'),
 		filename: '[name].js',
 	},
 	module: {
@@ -52,7 +50,7 @@ const config = {
 			},
 		],
 	},
-	// mode
+	mode
 };
 
 module.exports = config;
