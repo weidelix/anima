@@ -22,10 +22,6 @@ const sourceMapsInProduction = false;
  */
 
 const config = {
-	entry: [
-		'./svelte/renderer.ts',
-		'./svelte/styles/index.scss'
-	],
 	resolve: {
 		alias: {
 			// Note: Additional aliases will be loaded automatically = `tsconfig.compilerOptions.paths`
@@ -33,10 +29,6 @@ const config = {
 		},
 		extensions: ['.mjs', '.js', '.ts', '.svelte'],
 		mainFields: ['svelte', 'browser', 'module', 'main'],
-	},
-	output: {
-		path: path.join(__dirname, './.webpack/build'),
-		filename: 'bundle.js',
 	},
 	module: {
 		rules: [

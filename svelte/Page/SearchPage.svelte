@@ -105,11 +105,13 @@
 				</button>
 				{#if openSortBy}
 					<FloatingPanel right={right} top={top}>
-						<div class="flex justify-end">
-							<button class="text-white text-sm font-bold transition duration-400 text-white hover:text-green-400 hover:bg-green-200 hover:bg-opacity-20 rounded-xl p-2"
+						<div class="flex justify-between">
+							<div class="font-bold my-3 mx-6">
+								Sort by
+							</div>
+							<button class="text-white font-bold transition duration-400 text-white hover:text-green-400 rounded-xl mx-4 my-3"
 									on:click={() => setPosition()}>
-								<span class="h-full">Sort by</span>
-								<i class="fas fa-sort text-sm"></i>
+								<i class="fas fa-times text-xl"></i>
 							</button>
 						</div>
 
@@ -177,8 +179,8 @@
 	{:else if query === ''}
 		{#if $recentSearches.length === 0}
 			<div class="grid place-content-center w-full h-full">
-				<div class="my-2 h-full" transition:scale={{duration: 200, start: 0.5}}>
-					<i class="fas fa-box-open text-white text-9xl text-center"></i>
+				<div class="flex flex-wrap flex-col my-2 h-full" transition:scale={{duration: 200, start: 0.5}}>
+					<i class="fas fa-box-open self-center text-white text-9xl"></i>
 					<div class="text-white font-bold text-2xl my-2">No recent searches</div>
 				</div>
 			</div>
@@ -212,10 +214,10 @@
 		<div class="grid place-content-center w-full h-full">
 			<div class="my-2 h-full" in:scale={{duration: 200, start: 0.5}}>
 				<span class="hidden">{emptySearchIndex = Math.floor(Math.random() * emptySearchEmoticons.length)}</span>
-				<div class="text-white text-6xl my-10">
+				<div class="text-white text-center text-6xl my-10">
 					{emptySearchEmoticons[emptySearchIndex]}
 				</div>
-				<div class="text-white font-bold text-2xl">
+				<div class="text-white text-center font-bold text-2xl">
 					{emptySearchMessages[emptySearchIndex]}
 				</div>
 			</div>

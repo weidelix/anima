@@ -4,21 +4,9 @@ const path = require('path');
 const mode = process.env.NODE_ENV || 'development';
 
 const config = {
-	entry: {
-			index: './electron/index.ts',
-			preload: './electron/preload.ts'
-	},
+	entry: './electron/index.ts',
 	resolve: {
-		// alias: {
-		// Note: Additional aliases will be loaded automatically = `tsconfig.compilerOptions.paths`
-		// 	svelte: path.resolve('node_modules', 'svelte'),
-		// },
 		extensions: ['.js', '.ts', '.jsx', '.tsx', '.css', '.json'],
-		// mainFields: ['svelte', 'browser', 'module', 'main'],
-	},
-	output: {
-		path: path.join(__dirname, '/.webpack'),
-		filename: '[name].js',
 	},
 	module: {
 		rules: [
@@ -52,13 +40,7 @@ const config = {
 		],
 	},
 	mode,
-	plugins: [
-		new CopyPlugin({
-			patterns: [
-				{ from: path.join(__dirname, '/svelte/index.html'), to: path.join(__dirname, '/.webpack/index.html') }
-			]
-		}),
-	]
+	plugins: []
 };
 
 module.exports = config;

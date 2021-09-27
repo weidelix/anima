@@ -3,7 +3,7 @@
 	"productName": "hotdog",
 	"version": "1.0.0",
 	"description": "My Electron application description",
-	"main": ".webpack/index.js",
+	"main": ".webpack/main/index.js",
 	"scripts": {
 		"start": "cls && electron-forge start",
 		"package": "cross-env NODE_ENV=production && electron-forge package",
@@ -49,7 +49,16 @@
 						"mainConfig": "./webpack.main.config.js",
 						"renderer": {
 							"config": "./webpack.renderer.config.js",
-							"entryPoints": []
+							"entryPoints": [
+								{
+									"preload": {
+										"js": "./electron/preload.ts"
+									},
+									"js": "./svelte/renderer.ts",
+									"html": "./svelte/index.html",
+									"name": "main_window"
+								}
+							]
 						}
 					}
 				]
