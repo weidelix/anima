@@ -71,7 +71,7 @@
 			<HomePage/>
 		</div>
 		{#if isSearching}
-		<div class="{!isSearching ? '' : ''} w-full h-full px-5 py-10">
+		<div class="w-full h-full px-5 py-10">
 			<SearchPage query={searchQuery}/>
 			</div>
 		{/if}	
@@ -80,15 +80,4 @@
 
 <style>
 	@import '@fortawesome/fontawesome-free/css/all.min.css';
-
-	main {
-		text-align: center;
-		max-width: 240px;
-	}
-
-	@media (min-width: 640px) {
-		main {
-			max-width: none;
-		}
-	}
 </style>

@@ -2,9 +2,10 @@
 
 interface WindowAPI extends Window {
 	api: {
-		search(name: object) : any,
-		getDetails(id: number): any,
+		search(name: object) : Promise<any>,
+		getDetails(id: number): Promise<any>,
 		openWebsite(url: string): void,
-		partyjs: any
+		compressFiles(files: string[]): Promise<string[]>
+		compress(file: string): Promise<string>
 	}
 }

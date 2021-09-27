@@ -10,7 +10,7 @@
 	import { cubicOut } from 'svelte/easing';
 	import { crossfade } from 'svelte/transition';
 	import { onMount } from 'svelte';
-	import party from 'party-js';
+	// import party from 'party-js';
 
 	const [send, receive] = crossfade({
 			duration: 150,
@@ -43,6 +43,7 @@
 	let moreDesc = '';
 	let showMore = false;
 	let favButton: HTMLDivElement;
+	let contentBody: HTMLDivElement;
 	let platforms: any[];
 
 	const BG = 0;
@@ -65,6 +66,7 @@
 
 	async function getGameDetails() {
 		gameData = await window.api.getDetails(gameID);
+
 		platforms = gameData.parent_platforms;
 		let score = gameData.metacritic;
 
@@ -84,17 +86,17 @@
 <svelte:body on:keydown={closeDetailsPage}/>
 
 <!-- Minimized -->
-{#if !isMaximized }
+{#if !isMaximized}
 	{#if !isSearchResult}
 		<!-- Regular -->
-		<div class="card-min flex flex-wrap justify-center place-items-center cursor-pointer"
+		<div bind:this={contentBody} class="card-min flex flex-wrap justify-center place-items-center cursor-pointer"
 				on:click={getGameDetails}>
 			<div class="card-min-content text-white rounded-xl shadow-2xl overflow-hidden bg-black w-44 h-60"
 					on:click={() => { isMaximized = !isMaximized; $hasMaximizedCard = true; }}
 					in:receive={ !isMobile ? {key: BG} : {key: null}}
 					out:send={ !isMobile ? {key: BG} : {key: null}}>
 				<div class="flex flex-col w-full h-full">
-					<div class="proj-img w-full h-full" style="background-image: url({image})"
+					<div class="proj-img w-full h-full" style="background-image: url('{image}')"
 						in:receive={{key: IMG}}
 						out:send={{key: IMG}}>
 						<div class="flex flex-wrap content-end bg-gradient-to-t from-gray-900 via-transparent p-5 h-full w-full">
@@ -181,22 +183,22 @@
 					</div>
 					<div class="grid grid-cols-3 justify-around w-full my-3">
 						<div bind:this={favButton} class="flex flex-wrap flex-col justify-center transition duration-400 text-white hover:text-red-400 hover:bg-red-200 hover:bg-opacity-20 rounded-xl w-full h-full p-2"
-								 on:click={() => party.confetti(favButton)}>
+								 on:click={() => {}}>
 							<i class="far fa-heart text-2xl self-center"></i>
-							<div class="text-xs my-1">
+							<div class="text-xs text-center my-1">
 								Add to favorites
 							</div>
 						</div>
 						<div class="flex flex-wrap flex-col justify-center transition duration-400 text-white hover:text-yellow-400 hover:bg-yellow-200 hover:bg-opacity-20 rounded-xl w-full h-full p-2">
 							<i class="fas fa-layer-group text-2xl self-center"></i>
-							<div class="text-xs my-1">
+							<div class="text-xs text-center my-1">
 								Queue game
 							</div>
 						</div>
 						<div class="flex flex-wrap flex-col justify-center transition duration-400 text-white hover:text-blue-400 hover:bg-blue-200 hover:bg-opacity-20 rounded-xl w-full h-full p-2"
 								 on:click={() => window.api.openWebsite(gameData.website)}>
 							<i class="fas fa-globe-americas text-2xl self-center"></i>
-							<div class="text-xs my-1">
+							<div class="text-xs text-center my-1">
 								Visit website
 							</div>
 						</div>

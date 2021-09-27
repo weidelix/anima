@@ -9,10 +9,10 @@
 <script lang="ts">
 	import { scale, fly } from "svelte/transition";
 	import { cubicOut } from "svelte/easing";
-	import { onMount } from "svelte";
 	import Card, { hasMaximizedCard } from "../components/Card.svelte";
+	import CardPlaceholder from "../components/CardPlaceholder.svelte";
 	import FloatingPanel from "../components/FloatingPanel.svelte";
-	import quick, { byNameAtoZ, sort } from '../Quicksort';
+	import quick from '../Quicksort';
 
 	export let query = '';
 
@@ -38,7 +38,7 @@
 	let relevanceList : any[] = [];
 	let container: HTMLDivElement;
 	let sortButton: HTMLButtonElement;
-	let bottom = 10;
+	let top = 10;
 	let right = 10
 	let openSortBy = false;
 	let sortedBy = 'relevance';
@@ -48,7 +48,7 @@
 		openSortBy = !openSortBy;
 		let rect = sortButton.getBoundingClientRect();
 		right = rect.right;
-		bottom = rect.bottom;
+		top = rect.top;
 	};
 
 	async function search(name: string) {
@@ -104,35 +104,43 @@
 					<i class="fas fa-sort text-sm"></i>
 				</button>
 				{#if openSortBy}
-					<FloatingPanel right={right} top={bottom}>
-						<div class="flex flex-col space-y-2">
-							<button class="text-left w-full transition duration-400 text-white hover:text-green-400 hover:bg-green-200 hover:bg-opacity-20 rounded-xl p-3
+					<FloatingPanel right={right} top={top}>
+						<div class="flex justify-end">
+							<button class="text-white text-sm font-bold transition duration-400 text-white hover:text-green-400 hover:bg-green-200 hover:bg-opacity-20 rounded-xl p-2"
+									on:click={() => setPosition()}>
+								<span class="h-full">Sort by</span>
+								<i class="fas fa-sort text-sm"></i>
+							</button>
+						</div>
+
+						<div class="flex flex-col space-y-2 p-3">
+							<button class="text-left w-full transition duration-400 text-gray-200 hover:text-green-400 hover:bg-green-200 hover:bg-opacity-20 rounded-xl p-3
 														 {sortedBy === 'relevance' ? 'text-green-400 bg-green-200 bg-opacity-20' : ''}"
 											on:click={() => { bestResultGames = [...relevanceList]; sortedBy = 'relevance';}}>
 								<i class="fas fa-poll text-xl"></i>
 								<span class="mx-3 font-bold">Relevance</span>
 							</button>
-							<button class="text-left w-full transition duration-400 text-white hover:text-green-400 hover:bg-green-200 hover:bg-opacity-20 rounded-xl p-3
+							<button class="text-left w-full transition duration-400 text-gray-200 hover:text-green-400 hover:bg-green-200 hover:bg-opacity-20 rounded-xl p-3
 														 {sortedBy === 'a-z' ? 'text-green-400 bg-green-200 bg-opacity-20' : ''}"
-											on:click={() => { sort(bestResultGames, quick.byNameAtoZ); sortedBy = 'a-z'; bestResultGames = bestResultGames;}}>
+											on:click={() => { quick.sort(bestResultGames, quick.byNameAtoZ); sortedBy = 'a-z'; bestResultGames = bestResultGames;}}>
 								<i class="fas fa-sort-alpha-down text-xl"></i>
 								<span class="mx-3 font-bold">A - Z</span>
 							</button>
-							<button class="text-left w-full transition duration-400 text-white hover:text-green-400 hover:bg-green-200 hover:bg-opacity-20 rounded-xl p-3
+							<button class="text-left w-full transition duration-400 text-gray-200 hover:text-green-400 hover:bg-green-200 hover:bg-opacity-20 rounded-xl p-3
 														 {sortedBy === 'z-a' ? 'text-green-400 bg-green-200 bg-opacity-20' : ''}"
-											on:click={() => { sort(bestResultGames, quick.byNameZtoA); sortedBy = 'z-a'; bestResultGames = bestResultGames;}}>
+											on:click={() => { quick.sort(bestResultGames, quick.byNameZtoA); sortedBy = 'z-a'; bestResultGames = bestResultGames;}}>
 								<i class="fas fa-sort-alpha-up text-xl"></i>
 								<span class="mx-3 font-bold">Z - A</span>
 							</button>
-							<button class="text-left w-full transition duration-400 text-white hover:text-green-400 hover:bg-green-200 hover:bg-opacity-20 rounded-xl p-3
+							<button class="text-left w-full transition duration-400 text-gray-200 hover:text-green-400 hover:bg-green-200 hover:bg-opacity-20 rounded-xl p-3
 														 {sortedBy === 'date-desc' ? 'text-green-400 bg-green-200 bg-opacity-20' : ''}"
-											on:click={() => { sort(bestResultGames, quick.byNameZtoA); sortedBy = 'date-desc'; bestResultGames = bestResultGames;}}>
+											on:click={() => { quick.sort(bestResultGames, quick.byNameZtoA); sortedBy = 'date-desc'; bestResultGames = bestResultGames;}}>
 								<i class="fas fas fa-sort-numeric-down text-xl"></i>
 								<span class="mx-3 font-bold">Release Date Descending</span>
 							</button>
-							<button class="text-left w-full transition duration-400 text-white hover:text-green-400 hover:bg-green-200 hover:bg-opacity-20 rounded-xl p-3
+							<button class="text-left w-full transition duration-400 text-gray-200 hover:text-green-400 hover:bg-green-200 hover:bg-opacity-20 rounded-xl p-3
 														 {sortedBy === 'date-asc' ? 'text-green-400 bg-green-200 bg-opacity-20' : ''}"
-											on:click={() => { sort(bestResultGames, quick.byNameZtoA); sortedBy = 'date-asc'; bestResultGames = bestResultGames;}}>
+											on:click={() => { quick.sort(bestResultGames, quick.byNameZtoA); sortedBy = 'date-asc'; bestResultGames = bestResultGames;}}>
 								<i class="fas fa-sort-numeric-up text-xl"></i>
 								<span class="mx-3 font-bold">Release Date Ascending</span>
 							</button>
@@ -143,17 +151,25 @@
 			<div class="sc flex {$hasMaximizedCard ? 'space-x-0' : 'space-x-2'} content-start overflow-x-scroll my-2">
 				{#each bestResultGames as game}
 					<div on:click={() => addToRecents(game)}>
-						<Card gameID={game.id} title={game.name} image={game.background_image}/>
+						{#await window.api.compress(game.background_image)}
+							<CardPlaceholder/>
+						{:then image}
+							<Card gameID={game.id} title={game.name} image={image}/>
+						{/await}
 					</div>
 				{/each}
 			</div>
 		{/if}
 		{#if relatedGames.length !== 0}
 			<div class="text-white text-left font-bold text-xl my-2">Related</div>
-			<div class="sc flex flex-col {$hasMaximizedCard ? 'space-y-0' : 'space-y-2'} justify-start overflow-x-scroll">
+			<div class="sc flex flex-col justify-start {$hasMaximizedCard ? 'space-y-0' : 'space-y-2'} overflow-x-scroll">
 				{#each relatedGames as game}
 					<div on:click={() => addToRecents(game)}>
-						<Card isSearchResult={true} gameID={game.id} title={game.name} image={game.background_image}/>
+						{#await window.api.compress(game.background_image)}
+							<CardPlaceholder/>
+						{:then image}
+							<Card isSearchResult={true} gameID={game.id} title={game.name} image={image}/>
+						{/await}
 					</div>
 				{/each}
 			</div>
@@ -162,7 +178,7 @@
 		{#if $recentSearches.length === 0}
 			<div class="grid place-content-center w-full h-full">
 				<div class="my-2 h-full" transition:scale={{duration: 200, start: 0.5}}>
-					<i class="fas fa-box-open text-white text-9xl"></i>
+					<i class="fas fa-box-open text-white text-9xl text-center"></i>
 					<div class="text-white font-bold text-2xl my-2">No recent searches</div>
 				</div>
 			</div>
@@ -181,9 +197,13 @@
 				</div>
 			</div>
 			<div class="sc flex flex-row {$hasMaximizedCard ? 'space-x-0' : 'space-x-2'} content-start overflow-x-scroll">
-				{#each $recentSearches as recent, i (recent.id)}
+				{#each $recentSearches as game, i (game.id)}
 					<div in:fly={{duration: 400 + (100 * i), x: 100}}>
-						<Card gameID={recent.id} title={recent.name} image={recent.background_image}/>
+						{#await window.api.compress(game.background_image)}
+							<CardPlaceholder/>
+						{:then image}
+							<Card gameID={game.id} title={game.name} image={image}/>
+						{/await}
 					</div>
 				{/each}
 			</div>

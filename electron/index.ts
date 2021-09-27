@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain, shell } from 'electron';
+import { app, BrowserWindow, ipcMain } from 'electron';
 import * as url from 'url';
 import * as path from 'path';
 
@@ -68,7 +68,7 @@ app.whenReady().then(() => {
   const { net } = require('electron');
   
   // Search for game and get top result
-  ipcMain.handle('search', async(event, args) => {    
+  ipcMain.handle('search', async (event, args) => {    
     let promise = new Promise((resolve, reject) => {
       const request = net.request(`https://api.rawg.io/api/games?key=7cfd341fc762465493aef28bb5039375&search=${args.name}&dates=${args.date}`);
       let chunks : Buffer[] = [];
@@ -90,7 +90,7 @@ app.whenReady().then(() => {
   });
 
   // Get details for game
-  ipcMain.handle('get-details', async(event, args) => {    
+  ipcMain.handle('get-details', async (event, args) => {    
     let promise = new Promise(async (resolve, reject) => {
       const request = net.request(`https://api.rawg.io/api/games/${args}?key=7cfd341fc762465493aef28bb5039375&`);
 
@@ -113,6 +113,7 @@ app.whenReady().then(() => {
   });
 
   ipcMain.on('open-website', (event, args) => {
+    const { shell } = require('electron');
     shell.openExternal(args);
   });
 });

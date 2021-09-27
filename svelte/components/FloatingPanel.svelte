@@ -22,7 +22,7 @@
 </script>
 
 <div bind:this={panel} class="absolute" transition:fly={{ duration: 150, y: -30 }}>
-	<div class="w-66 text-left text-white bg-sub-color rounded-xl shadow-xl p-3">
+	<div class="w-66 text-left text-white bg-sub-color rounded-xl shadow-xl">
 		<slot/>
 	</div>
 </div>
