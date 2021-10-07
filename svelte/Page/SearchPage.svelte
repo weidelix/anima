@@ -12,7 +12,7 @@
 	import Card, { hasMaximizedCard } from "../components/Card.svelte";
 	import CardPlaceholder from "../components/CardPlaceholder.svelte";
 	import FloatingPanel from "../components/FloatingPanel.svelte";
-	import quick from '../Quicksort';
+	import quick, { byReleaseDesc } from '../Quicksort';
 
 	export let query = '';
 
@@ -53,7 +53,7 @@
 
 	async function search(name: string) {
 		if (query !== '') {
-			let searchedGames = (await window.api.search({name: query})).results;
+			let searchedGames = await window.api.search({name: query});
 			
 			bestResultGames   = searchedGames.filter(game => game.name.toLowerCase().includes(query.toLowerCase()));
 			relatedGames      = searchedGames.filter(game => !game.name.toLowerCase().includes(query.toLowerCase()));
@@ -93,7 +93,7 @@
 	$: search(query);
 </script>
 
-<div bind:this={container} class="w-full h-full">
+<div bind:this={container} class="w-full h-full pt-10">
 	{#if bestResultGames.length + relatedGames.length !== 0 && query !== ''}
 		{#if bestResultGames.length !== 0}
 			<div class="flex justify-between">
@@ -136,13 +136,13 @@
 							</button>
 							<button class="text-left w-full transition duration-400 text-gray-200 hover:text-green-400 hover:bg-green-200 hover:bg-opacity-20 rounded-xl p-3
 														 {sortedBy === 'date-desc' ? 'text-green-400 bg-green-200 bg-opacity-20' : ''}"
-											on:click={() => { quick.sort(bestResultGames, quick.byNameZtoA); sortedBy = 'date-desc'; bestResultGames = bestResultGames;}}>
+											on:click={() => { quick.sort(bestResultGames, quick.byReleaseDesc); sortedBy = 'date-desc'; bestResultGames = bestResultGames;}}>
 								<i class="fas fas fa-sort-numeric-down text-xl"></i>
 								<span class="mx-3 font-bold">Release Date Descending</span>
 							</button>
 							<button class="text-left w-full transition duration-400 text-gray-200 hover:text-green-400 hover:bg-green-200 hover:bg-opacity-20 rounded-xl p-3
 														 {sortedBy === 'date-asc' ? 'text-green-400 bg-green-200 bg-opacity-20' : ''}"
-											on:click={() => { quick.sort(bestResultGames, quick.byNameZtoA); sortedBy = 'date-asc'; bestResultGames = bestResultGames;}}>
+											on:click={() => { quick.sort(bestResultGames, quick.byReleaseAsc); sortedBy = 'date-asc'; bestResultGames = bestResultGames;}}>
 								<i class="fas fa-sort-numeric-up text-xl"></i>
 								<span class="mx-3 font-bold">Release Date Ascending</span>
 							</button>

@@ -10,10 +10,9 @@
 	import { cubicOut } from 'svelte/easing';
 	import { crossfade } from 'svelte/transition';
 	import { onMount } from 'svelte';
-	// import party from 'party-js';
 
 	const [send, receive] = crossfade({
-			duration: 150,
+			duration: 200,
 		
 			fallback(node, params) {
 				const style = getComputedStyle(node);
@@ -45,6 +44,7 @@
 	let favButton: HTMLDivElement;
 	let contentBody: HTMLDivElement;
 	let platforms: any[];
+	let y = 0;
 
 	const BG = 0;
 	const TITLE = 1;
@@ -84,15 +84,15 @@
 </script>
 
 <svelte:body on:keydown={closeDetailsPage}/>
-
+<svelte:window bind:scrollY={y}/>
 <!-- Minimized -->
 {#if !isMaximized}
 	{#if !isSearchResult}
 		<!-- Regular -->
-		<div bind:this={contentBody} class="card-min flex flex-wrap justify-center place-items-center cursor-pointer"
+		<div bind:this={contentBody} class="card-min flex flex-wrap justify-center place-items-center cursor-pointer "
 				on:click={getGameDetails}>
 			<div class="card-min-content text-white rounded-xl shadow-2xl overflow-hidden bg-black w-44 h-60"
-					on:click={() => { isMaximized = !isMaximized; $hasMaximizedCard = true; }}
+					on:click={() => { isMaximized = !isMaximized; $hasMaximizedCard = true;}}
 					in:receive={ !isMobile ? {key: BG} : {key: null}}
 					out:send={ !isMobile ? {key: BG} : {key: null}}>
 				<div class="flex flex-col w-full h-full">
@@ -146,15 +146,17 @@
 							overscroll-contain left-0 text-white 
 							{(!isMaximized ? ' hidden ' : '')}
 							h-full w-full"
-				style="top: {window.scrollY}px">
+				style="top: {window.scrollY}px"
+				on:scroll|stopPropagation>
 
 			<div class="card-max-content flex flex-col self-center
 									justify-items-start place-self-center bold text-5xl bg-black
-									shadow-lg w-full h-full bg-no-repeat bg-cover"
+									shadow-lg w-full h-full bg-no-repeat bg-top bg-cover"
 					 in:receive="{{key: BG}}"
 					 out:send="{{key: BG}}"
 					 style="background-image: url({gameData.background_image_additional}); 
-					        background-position: 0 -200px">
+					        background-position: 0 -200px;
+									background-size: 1920px 1080px;">
 			
 				<div class="flex flex-wrap content-start justify-end absolute w-full" on:click={closeDetailsPage}>
 					<i class="fas fa-times text-2xl cursor-pointer m-4 transition duration-400 text-white hover:text-green-400"></i>

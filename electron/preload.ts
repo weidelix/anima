@@ -4,7 +4,7 @@ import Compressor from 'compressorjs';
 contextBridge.exposeInMainWorld('api', {
 	search: async (name: string) => {
 		let data = await ipcRenderer.invoke('search', name);
-		return data;
+		return data.results;
 	},
 
 	getDetails: async (id: number) => {
@@ -17,15 +17,35 @@ contextBridge.exposeInMainWorld('api', {
 	},
 	
 	compressFiles: async (files: string[]) => {
-		let data = await ipcRenderer.invoke('compress', files);
+		let promise = new Promise<string[]>(async (resolve, reject) => {
+			let images: string[] = [];
 
-		return data;
+			for (let i = 0; i < files.length; i++) {
+				new Compressor(await fetch(files[i]).then(res => res.blob()), {
+					quality: 0.6,
+					maxHeight: 600,
+					maxWidth: 480,
+		
+					success(res: Blob) {
+						images.push(URL.createObjectURL(res));
+					},
+					
+					error(err: any) {
+						console.log(err);
+					}
+				});
+			}
+
+			resolve(images);
+		});
+		
+		return promise;
 	},
 
 	compress: async (file: string) => {
 		let promise = new Promise<string>(async (resolve, reject) => {
 			new Compressor(await fetch(file).then(res => res.blob()), {
-				quality: 0.2,
+				quality: 0.6,
 				maxHeight: 600,
 				maxWidth: 480,
 	

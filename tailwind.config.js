@@ -28,6 +28,11 @@ const config = {
 		}),
 		extend: {},
 	},
+	variants: {
+		extend: {
+			transform: ['hover', 'focus']
+		}
+	},
 	plugins: [],
 };
 

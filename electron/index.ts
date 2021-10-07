@@ -1,8 +1,7 @@
 import { app, BrowserWindow, ipcMain, session } from 'electron';
-import * as url from 'url';
-import * as path from 'path';
 
 const prod = false;
+
 declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 
@@ -14,8 +13,8 @@ if (require('electron-squirrel-startup')) { // eslint-disable-line global-requir
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 1366,
-    height: 768,
+    minWidth: 640,
+    minHeight: 480,
     darkTheme: true,
     webPreferences: {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
@@ -44,7 +43,7 @@ app.on('ready', () => {
     callback({
       responseHeaders: {
         ...details.responseHeaders,
-        'Content-Security-Policy': ["img-src 'self' https://media.rawg.io blob: data:"]
+        'Content-Security-Policy': ["img-src 'self' https://media.rawg.io https://wallpaperaccess.com blob: data:"]
       }
     })
   })

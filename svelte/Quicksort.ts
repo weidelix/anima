@@ -57,11 +57,31 @@ export function byNameZtoA(a: any, b: any) {
 	if (val ===  1) return true;
 }
 
+export function byReleaseAsc(a: any, b: any) {
+	let da = new Date(a.released);
+	let db = new Date(b.released);
+
+	if (da < db) return false;
+	if (da > db) return true;
+	if (da === db) return true;
+}
+
+export function byReleaseDesc(a: any, b: any) {
+	let da = new Date(a.released);
+	let db = new Date(b.released);
+
+	if (da > db) return false;
+	if (da < db) return true;
+	if (da === db) return true;
+}
+
 export default {
 	sort,
 
 	// Sorting order
 	byNameAtoZ,
 	byNameZtoA,
-	byRelevance
+	byRelevance,
+	byReleaseAsc,
+	byReleaseDesc
 };
