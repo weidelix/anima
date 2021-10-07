@@ -16,18 +16,27 @@ contextBridge.exposeInMainWorld('api', {
 		ipcRenderer.send('open-website', url);
 	},
 	
-	compressFiles: async (files: string[]) => {
+	compressFiles: async (files: string[]) => {			
 		let promise = new Promise<string[]>(async (resolve, reject) => {
 			let images: string[] = [];
+			let imageBlob: Blob[] = [];
 
 			for (let i = 0; i < files.length; i++) {
-				new Compressor(await fetch(files[i]).then(res => res.blob()), {
+				imageBlob.push(await (await fetch(files[i])).blob());
+			}
+
+			for (let i = 0; i < files.length; i++) {
+				new Compressor(imageBlob[i], {
 					quality: 0.6,
 					maxHeight: 600,
 					maxWidth: 480,
 		
 					success(res: Blob) {
-						images.push(URL.createObjectURL(res));
+						images[i] = URL.createObjectURL(res);
+
+						if (!images.includes(undefined)) {
+							resolve(images);
+						}
 					},
 					
 					error(err: any) {
@@ -35,8 +44,6 @@ contextBridge.exposeInMainWorld('api', {
 					}
 				});
 			}
-
-			resolve(images);
 		});
 		
 		return promise;
@@ -48,7 +55,7 @@ contextBridge.exposeInMainWorld('api', {
 				quality: 0.6,
 				maxHeight: 600,
 				maxWidth: 480,
-	
+
 				success(res: Blob) {
 					resolve(URL.createObjectURL(res));
 				},
@@ -58,7 +65,7 @@ contextBridge.exposeInMainWorld('api', {
 				}
 			});
 		});
-		
+
 		return promise;
 	},
 });
