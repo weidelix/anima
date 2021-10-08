@@ -16,7 +16,7 @@ contextBridge.exposeInMainWorld('api', {
 		ipcRenderer.send('open-website', url);
 	},
 	
-	compressFiles: async (files: string[]) => {			
+	compressFiles: async (files: string[], width = 600, height = 400) => {			
 		let promise = new Promise<string[]>(async (resolve, reject) => {
 			let images: string[] = [];
 			let imageBlob: Blob[] = [];
@@ -28,8 +28,8 @@ contextBridge.exposeInMainWorld('api', {
 			for (let i = 0; i < files.length; i++) {
 				new Compressor(imageBlob[i], {
 					quality: 0.6,
-					maxHeight: 600,
-					maxWidth: 480,
+					maxWidth: width,
+					maxHeight: height,
 		
 					success(res: Blob) {
 						images[i] = URL.createObjectURL(res);
@@ -49,12 +49,12 @@ contextBridge.exposeInMainWorld('api', {
 		return promise;
 	},
 
-	compress: async (file: string) => {
+	compress: async (file: string, width = 600, height = 400) => {
 		let promise = new Promise<string>(async (resolve, reject) => {
 			new Compressor(await fetch(file).then(res => res.blob()), {
 				quality: 0.6,
-				maxHeight: 600,
-				maxWidth: 480,
+				maxWidth: width,
+				maxHeight: height,
 
 				success(res: Blob) {
 					resolve(URL.createObjectURL(res));
