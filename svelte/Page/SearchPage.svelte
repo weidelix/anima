@@ -21,7 +21,7 @@
 		'What\'s that?',
 		'Try again in the future',
 		'uh huh?',
-		'Try asking your Mom'
+		'Try asking your mom'
 	];
 
 	let emptySearchEmoticons = [
