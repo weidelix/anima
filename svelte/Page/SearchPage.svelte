@@ -42,7 +42,6 @@
 	let right = 10
 	let openSortBy = false;
 	let sortedBy = 'relevance';
-	let sorter;
 
 	function setPosition() {
 		openSortBy = !openSortBy;
