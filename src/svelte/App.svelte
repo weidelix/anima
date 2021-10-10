@@ -7,8 +7,7 @@
 </script>
 
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { hasMaximizedCard } from './components/Card.svelte';
+	import { hasMaximizedCard } from './Page/DetailsPage.svelte';
 	import HomePage from './Page/HomePage.svelte';
 	import SearchPage from './Page/SearchPage.svelte';
 	
@@ -38,12 +37,14 @@
 <svelte:body on:keydown={closeSearchPage}/>
 
 {#if navigator.onLine}
-	<div class="sc flex flex-col bg-main-color w-screen h-screen {$hasMaximizedCard ? 'overflow-hidden' : 'overflow-y-auto'}"
+	<div class="sc flex flex-col bg-main-color w-screen h-screen 
+							{$hasMaximizedCard ? 'overflow-hidden' : 'overflow-y-auto'}"
 			on:scroll={(e) => $scrollY = e.currentTarget.scrollTop}>
+
 		<!-- Bar -->
-		<div class="flex px-5 py-2 w-full bg-transparent 
-								justify-between absolute left-0 top-0"
-				style="background-color: rgba(33, 33, 33, {$scrollY * 0.004});">
+		<div class="flex px-5 py-2 w-full bg-main-color
+								justify-between absolute left-0 top-0 transition duration-500 
+								{$scrollY < 200 ? 'bg-opacity-0' : 'bg-opacity-100'}">
 			<h1 class="text-white text-2xl text-left font-main">
 				<span class="text-white">anima</span>
 			</h1>
@@ -53,7 +54,7 @@
 								class="bg-transparent outline-none align-middle p-3 border-b-2 
 												transition duration-400 text-sm placeholder-white border-transparent focus:border-green-400 text-white"
 								placeholder="Search" 
-								on:keydown={enableSearch} 
+								on:keydown={enableSearch}
 								on:mousedown={enableSearch} 
 								on:focus={() => inputElement.select()}>
 					<div class:hidden={isSearching} on:click={enableSearch}>

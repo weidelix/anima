@@ -1,10 +1,10 @@
 {
   "extends": "@tsconfig/svelte/tsconfig.json",
 
-  "include": ["./**/*"],
+  "include": ["./**/*", "../src/electron/index.ts", "../src/electron/preload.ts"],
   "exclude": ["node_modules/*", "__sapper__/*", "public/*"],
 
   "compilerOptions": {
-    "allowJs": true
+    "allowJs": true,
   },
 }

@@ -52,10 +52,10 @@
 							"entryPoints": [
 								{
 									"preload": {
-										"js": "./electron/preload.ts"
+										"js": "./src/electron/preload.ts"
 									},
-									"js": "./svelte/renderer.ts",
-									"html": "./svelte/index.html",
+									"js": "./src/svelte/renderer.ts",
+									"html": "./src/svelte/index.html",
 									"name": "main_window"
 								}
 							]

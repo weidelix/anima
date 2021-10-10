@@ -9,11 +9,11 @@
 <script lang="ts">
 	import { scale, fly } from "svelte/transition";
 	import { cubicOut } from "svelte/easing";
-	import Card, { hasMaximizedCard } from "../components/Card.svelte";
-	import CardPlaceholder from "../components/CardPlaceholder.svelte";
+	import Card from "../components/Card.svelte";
+	import DetailsPage, { hasMaximizedCard } from "./DetailsPage.svelte";
 	import FloatingPanel from "../components/FloatingPanel.svelte";
-	import quick, { byReleaseDesc } from '../Quicksort';
-
+	import quick from '../Quicksort';
+	import Compress from '../Compress';
 	export let query = '';
 
 	let emptySearchMessages = [
@@ -42,6 +42,12 @@
 	let right = 10
 	let openSortBy = false;
 	let sortedBy = 'relevance';
+	let show = false;
+
+	// Selected game
+	let id = -1;
+	let name = '';
+	let image = '';
 
 	function setPosition() {
 		openSortBy = !openSortBy;
@@ -91,6 +97,10 @@
 	
 	$: search(query);
 </script>
+
+{#if show}
+	<DetailsPage on:close={() => show = false} {id} {name} {image}/>
+{/if}
 
 <div bind:this={container} class="w-full h-full pt-10">
 	{#if bestResultGames.length + relatedGames.length !== 0 && query !== ''}
@@ -150,28 +160,22 @@
 				{/if}
 			</div>
 			<div class="sc flex {$hasMaximizedCard ? 'space-x-0' : 'space-x-2'} content-start overflow-x-scroll my-2">
-				{#each bestResultGames as game}
-					<div on:click={() => addToRecents(game)}>
-						{#await window.api.compress(game.background_image)}
-							<CardPlaceholder/>
-						{:then image}
-							<Card gameID={game.id} title={game.name} image={image}/>
-						{/await}
-					</div>
+				{#each bestResultGames as game, i (game.id)}
+					{#await Compress.compress(game.background_image, 400, 500) then bg}
+						<Card on:click={() => { addToRecents(game); show = true; id = game.id; name = game.name; image = bg }}
+									id={game.id} title={game.name} image={bg}/>
+					{/await}
 				{/each}
 			</div>
 		{/if}
 		{#if relatedGames.length !== 0}
 			<div class="text-white text-left font-bold text-xl my-2">Related</div>
 			<div class="sc flex flex-col justify-start {$hasMaximizedCard ? 'space-y-0' : 'space-y-2'} overflow-x-scroll">
-				{#each relatedGames as game}
-					<div on:click={() => addToRecents(game)}>
-						{#await window.api.compress(game.background_image)}
-							<CardPlaceholder/>
-						{:then image}
-							<Card isSearchResult={true} gameID={game.id} title={game.name} image={image}/>
-						{/await}
-					</div>
+				{#each relatedGames as game, i (game.id)}
+					{#await Compress.compress(game.background_image, 300, 400) then bg}
+						<Card on:click={() => { addToRecents(game); show = true; id = game.id; name = game.name; image = bg }}
+									id={game.id} title={game.name} image={bg}/>
+					{/await}
 				{/each}
 			</div>
 		{/if}
@@ -184,14 +188,14 @@
 				</div>
 			</div>
 		{:else}
-			<div class="flex justify-between cursor-pointer">
+			<div class="flex justify-between">
 				<div>
 					<div class="text-white text-left font-bold text-2xl my-4">
 						Recents
 						<i class="fas fa-history text-white text-2xl" in:rotate={{duration: 1000, easing: cubicOut}}></i>
 					</div>
 				</div>
-				<div class="text-white text-left font-bold text-sm my-4 transition duration-400 text-xl text-white hover:text-red-400" 
+				<div class=" cursor-pointer text-white text-left font-bold text-sm my-4 transition duration-400 text-xl text-white hover:text-red-400" 
 				     on:click={() => { clearRecents()}}>
 					<span>Clear</span>
 					<i class="far fa-trash-alt"></i>
@@ -200,10 +204,9 @@
 			<div class="sc flex flex-row {$hasMaximizedCard ? 'space-x-0' : 'space-x-2'} content-start overflow-x-scroll">
 				{#each $recentSearches as game, i (game.id)}
 					<div in:fly={{duration: 400 + (100 * i), x: 100}}>
-						{#await window.api.compress(game.background_image)}
-							<CardPlaceholder/>
-						{:then image}
-							<Card gameID={game.id} title={game.name} image={image}/>
+						{#await Compress.compress(game.background_image) then image}
+							<Card on:click={() => { show = true; id = game.id; name = game.name; image = image }} 
+										id={game.id} title={game.name} image={image}/>
 						{/await}
 					</div>
 				{/each}

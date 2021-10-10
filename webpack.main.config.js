@@ -4,7 +4,7 @@ const path = require('path');
 const mode = process.env.NODE_ENV || 'development';
 
 const config = {
-	entry: './electron/index.ts',
+	entry: './src/electron/index.ts',
 	resolve: {
 		extensions: ['.js', '.ts', '.jsx', '.tsx', '.css', '.json'],
 	},

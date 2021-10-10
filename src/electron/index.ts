@@ -1,6 +1,6 @@
 import { app, BrowserWindow, ipcMain, session } from 'electron';
 
-const prod = true;
+let prod = false;
 
 declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
@@ -43,7 +43,7 @@ app.on('ready', () => {
     callback({
       responseHeaders: {
         ...details.responseHeaders,
-        'Content-Security-Policy': ["img-src 'self' https://media.rawg.io https://wallpaperaccess.com blob: data:"]
+        'Content-Security-Policy': ["img-src 'self' https://media.rawg.io blob: data:"]
       }
     })
   })
@@ -85,7 +85,17 @@ app.whenReady().then(() => {
         });
         
         response.on('end', () => {
-          resolve(JSON.parse(Buffer.concat(chunks).toString()));
+          let data: any[] = JSON.parse(Buffer.concat(chunks).toString()).results;
+          
+          data = data.map((el) => {
+            return {
+              id: el.id,
+              name: el.name,
+              background_image: el.background_image
+            };
+          });
+          
+          resolve(data);
         });
       });
       
