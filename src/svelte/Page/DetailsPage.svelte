@@ -28,7 +28,6 @@
 <script lang="ts">
 	import { onMount, createEventDispatcher } from 'svelte';
 	import { fade } from 'svelte/transition';
-import Button from '../components/Button.svelte';
 
 	export let id = -1;
 	export let name = '';
@@ -74,6 +73,7 @@ import Button from '../components/Button.svelte';
 	}
 
 	onMount(() => {
+		dispatch('open');
 		getGameDetails();
 	});
 

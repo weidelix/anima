@@ -43,10 +43,9 @@
 
 	<!-- Bar -->
 	<div class="absolute left-0 top-0 flex justify-between px-5 py-2 w-full
-							{$scrollY < 200 ? 'bg-opacity-0' : 'bg-opacity-100'}
-							bg-main-color transition duration-500">
+							bg-main-color"
+			 style="background-color: rgba(33, 33, 33, {$scrollY * 0.003})">
 		<div class="flex content-center font-main text-2xl text-white text-left">
-			<!-- <div class="h-full w-12 bg-contain bg-no-repeat" style="background-image: url('anima_icon.png')"></div> -->
 			<span class="text-white">anima</span>
 		</div>
 		<div class="flex flex-wrap  justify-end content-center h-10">

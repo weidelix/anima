@@ -13,6 +13,7 @@
 	export let ready = false;
 
 	const dispatch = createEventDispatcher();
+
 	let banners: any[] = [];  
 	let bigText = 'Title';
 	let bigSubText = 'Subtext';
@@ -62,7 +63,9 @@
 </script>
 
 {#if show}
-	<DetailsPage on:close={() => show = false} transition={false} id={id}/>
+	<DetailsPage on:close={() => { show = false; change(i); }}
+							 on:open={() => clearTimeout(timeout)} 
+							 transition={false} id={id} image={bigImage} name={bigText}/>
 {/if}
 
 <div class="w-full h-screen mb-8 overscroll-auto" style="height: 100vh;">
@@ -72,7 +75,7 @@
 		<div class="bg-gradient-to-t from-main-color via-transparent w-full h-full">
 			<div class="bg-gradient-to-r from-main-color via-transparent w-full h-full">
 				<div class="flex flex-col space-between text-white h-full">
-					{#if ready}
+					{#if ready && !$hasMaximizedCard}
 						<div class="flex-grow p-20">
 						<div class="flex flex-col flex-wrap justify-center h-full" in:fly={{delay: 300, x: -100}}>
 							<div class="text-base">
@@ -80,7 +83,9 @@
 								  •  
 								{rating}
 							</div>
-							<div class="text-6xl font-bold">{bigText}</div>
+							<div class="text-6xl font-bold">
+								{bigText}
+							</div>
 								<button class="w-28 mt-6 px-4 py-2 transition bg-gray-500 bg-opacity-30 hover:bg-opacity-50 rounded"
 									on:click={() => {$hasMaximizedCard = true; show = true; }}>
 									Check out
