@@ -21,7 +21,7 @@
 			style=" background-image: url('{image}');">
 
 		<div class="w-48 h-28 text-white transition {hover ? 'opacity-100' : 'opacity-0'}">
-			<div class="bg-gradient-to-r from-main-color w-full h-full">
+			<div class="bg-gradient-to-r from-black w-full h-full">
 				<div class="flex flex-col flex-wrap justify-end h-full p-3">
 					{#if hover}
 						<div class="text-sm font-bold" transition:fly={{x: -50, duration: 200}}>{name}</div>

@@ -28,6 +28,7 @@
 <script lang="ts">
 	import { onMount, createEventDispatcher } from 'svelte';
 	import { fade } from 'svelte/transition';
+import Button from '../components/Button.svelte';
 
 	export let id = -1;
 	export let name = '';
@@ -55,7 +56,7 @@
 	}
 
 	async function getGameDetails() {
-		gameData = await window.api.getDetails(id);
+		gameData = await window.anima.getDetails(id);
 
 		platforms = gameData.parent_platforms;
 		let score = gameData.metacritic;
@@ -80,7 +81,7 @@
 
 <svelte:body on:keydown={closeDetailsPage}/>
 
-<div class="sc grid absolute overflow-auto
+<div class="sc z-50 grid absolute overflow-auto
 					overscroll-contain left-0 text-white 
 					{(!hasMaximizedCard ? ' hidden ' : '')}
 					h-full w-full"
@@ -135,7 +136,7 @@
 					</div>
 				</div>
 				<div class="flex flex-wrap flex-col justify-center transition duration-400 text-white hover:text-blue-400 hover:bg-blue-200 hover:bg-opacity-20 rounded-xl w-full h-full p-2"
-							on:click={() => window.api.openWebsite(gameData.website)}>
+							on:click={() => window.anima.openWebsite(gameData.website)}>
 					<i class="fas fa-globe-americas text-2xl self-center"></i>
 					<div class="text-xs text-center my-1">
 						Visit website

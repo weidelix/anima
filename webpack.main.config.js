@@ -1,6 +1,3 @@
-const CopyPlugin = require("copy-webpack-plugin");
-const path = require('path');
-
 const mode = process.env.NODE_ENV || 'development';
 
 const config = {
@@ -34,9 +31,20 @@ const config = {
 					loader: 'ts-loader',
 					options: {
 						transpileOnly: true
-					}
+					},
 				}
 			},
+			{
+        test: /\.(png|jpe?g|gif)$/i,
+        use: [
+          {
+            loader: 'file-loader',
+						options: {
+							name: 'res/[name].[ext]'
+						}
+          },
+        ],
+      },
 		],
 	},
 	mode,

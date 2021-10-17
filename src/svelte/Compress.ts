@@ -1,6 +1,5 @@
 import Compressor from 'compressorjs';
 
-
 export async function compressFiles(files: string[], width = 500, height = 400) {			
 	let promise = new Promise<string[]>(async (resolve, reject) => {
 		let images: string[] = [];
@@ -19,7 +18,7 @@ export async function compressFiles(files: string[], width = 500, height = 400) 
 				success(res: Blob) {
 					images[i] = URL.createObjectURL(res);
 
-					if (!images.includes(undefined)) {
+					if (images.length === files.length && !images.includes(undefined)) {
 						resolve(images);
 					}
 				},

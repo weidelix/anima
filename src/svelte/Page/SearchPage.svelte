@@ -20,7 +20,7 @@
 		'Try checking your speeling',
 		'What\'s that?',
 		'Try again in the future',
-		'uh huh?',
+		'Well, well, well. How the turntables',
 		'Try asking your mom'
 	];
 
@@ -58,7 +58,7 @@
 
 	async function search(name: string) {
 		if (query !== '') {
-			let searchedGames = await window.api.search({name: query});
+			let searchedGames = await window.anima.search({name: query});
 			
 			bestResultGames   = searchedGames.filter(game => game.name.toLowerCase().includes(query.toLowerCase()));
 			relatedGames      = searchedGames.filter(game => !game.name.toLowerCase().includes(query.toLowerCase()));

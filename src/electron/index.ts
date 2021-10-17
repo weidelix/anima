@@ -1,6 +1,7 @@
 import { app, BrowserWindow, ipcMain, session } from 'electron';
+import path from 'path';
 
-let prod = false;
+import '../../res/anima_icon.png';
 
 declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
@@ -16,6 +17,7 @@ const createWindow = () => {
     minWidth: 640,
     minHeight: 480,
     darkTheme: true,
+    icon: path.join(__dirname, 'res/anima_icon.png'),
     webPreferences: {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
     }
@@ -25,7 +27,7 @@ const createWindow = () => {
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
   // Open the DevTools.
-  if (prod) {
+  if (app.isPackaged) {
     mainWindow.removeMenu();
     mainWindow.webContents.closeDevTools();
   } else {
@@ -85,17 +87,24 @@ app.whenReady().then(() => {
         });
         
         response.on('end', () => {
-          let data: any[] = JSON.parse(Buffer.concat(chunks).toString()).results;
+          let data: any[];
           
-          data = data.map((el) => {
-            return {
-              id: el.id,
-              name: el.name,
-              background_image: el.background_image
-            };
-          });
-          
-          resolve(data);
+          try {
+            data = JSON.parse(Buffer.concat(chunks).toString()).results;
+
+            data = data.map((el) => {
+              return {
+                id: el.id,
+                name: el.name,
+                background_image: el.background_image
+              };
+            });
+
+            resolve(data);
+          } 
+          catch (error) {
+            resolve([]);  
+          }
         });
       });
       
@@ -131,5 +140,9 @@ app.whenReady().then(() => {
   ipcMain.on('open-website', (event, args) => {
     const { shell } = require('electron');
     shell.openExternal(args);
+  });
+
+  ipcMain.on('quit', (event, args) => {
+    app.quit();
   });
 });

@@ -1,6 +1,6 @@
-import { contextBridge, ipcRenderer } from "electron";
+import { contextBridge, ipcRenderer } from 'electron';
 
-contextBridge.exposeInMainWorld('api', {
+contextBridge.exposeInMainWorld('anima', {
 	search: async (name: string) => {
 		let data = await ipcRenderer.invoke('search', name);
 		return data;
@@ -13,5 +13,11 @@ contextBridge.exposeInMainWorld('api', {
 	
 	openWebsite: (url: string) => {
 		ipcRenderer.send('open-website', url);
-	},
+	}
+});
+
+contextBridge.exposeInMainWorld('app', {
+	quit: () => {
+		ipcRenderer.send('quit');
+	}
 });
