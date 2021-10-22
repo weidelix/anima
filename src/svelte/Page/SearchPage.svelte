@@ -3,7 +3,8 @@
 
 	declare let window : WindowAPI; 
 
-	let recentSearches = writable([]);
+	export const recentSearches = writable([]);
+	export const isSearchPageOpen = writable(false);
 </script>
 
 <script lang="ts">
@@ -94,6 +95,12 @@
 			}
 		};
 	}
+
+	function closeSearchPage(e: KeyboardEvent) {
+		if (!$hasMaximizedCard && e.key === 'Escape') {
+			$isSearchPageOpen = false;
+		}
+	}
 	
 	$: search(query);
 </script>
@@ -102,12 +109,14 @@
 	<DetailsPage on:close={() => show = false} {id} {name} {image}/>
 {/if}
 
-<div bind:this={container} class="w-full h-full pt-10">
+<svelte:body on:keydown={closeSearchPage}/>
+
+<div bind:this={container} class="w-full h-full mt-10">
 	{#if bestResultGames.length + relatedGames.length !== 0 && query !== ''}
 		{#if bestResultGames.length !== 0}
 			<div class="flex justify-between">
 				<div class="text-white text-left font-bold text-2xl">Best Results</div>
-				<button bind:this={sortButton} class="text-white text-sm font-bold transition duration-400 text-white hover:text-green-400 hover:bg-green-200 hover:bg-opacity-20 rounded-xl p-2"
+				<button bind:this={sortButton} class="text-sm font-bold transition duration-400 text-white hover:text-green-400 hover:bg-green-200 hover:bg-opacity-20 rounded-xl p-2"
 								on:click={() => setPosition()}>
 					<span class="h-full">Sort by</span>
 					<i class="fas fa-sort text-sm"></i>
@@ -118,7 +127,7 @@
 							<div class="font-bold my-3 mx-6">
 								Sort by
 							</div>
-							<button class="text-white font-bold transition duration-400 text-white hover:text-green-400 rounded-xl mx-4 my-3"
+							<button class="font-bold transition duration-400 text-white hover:text-green-400 rounded-xl mx-4 my-3"
 									on:click={() => setPosition()}>
 								<i class="fas fa-times text-xl"></i>
 							</button>
@@ -195,7 +204,7 @@
 						<i class="fas fa-history text-white text-2xl" in:rotate={{duration: 1000, easing: cubicOut}}></i>
 					</div>
 				</div>
-				<div class=" cursor-pointer text-white text-left font-bold text-sm my-4 transition duration-400 text-xl text-white hover:text-red-400" 
+				<div class=" cursor-pointer text-left font-bold my-4 transition duration-400 text-xl text-white hover:text-red-400" 
 				     on:click={() => { clearRecents()}}>
 					<span>Clear</span>
 					<i class="far fa-trash-alt"></i>

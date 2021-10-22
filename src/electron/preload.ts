@@ -17,6 +17,19 @@ contextBridge.exposeInMainWorld('anima', {
 });
 
 contextBridge.exposeInMainWorld('app', {
+	readUserProfile: async () => {
+		let data = await ipcRenderer.invoke('read-user-profile');
+		return data;
+	},
+
+	writeUserProfile: (data: string) => {
+		ipcRenderer.send('write-user-profile', data);
+	},
+	
+	init: async () => {
+		ipcRenderer.send('init');
+	},
+
 	quit: () => {
 		ipcRenderer.send('quit');
 	}

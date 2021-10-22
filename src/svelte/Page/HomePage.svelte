@@ -1,5 +1,8 @@
 <script lang="ts" context="module">
 	declare let window : WindowAPI;
+
+	let popular: any[] = [];
+	let releases: any[] = [];
 </script>
 
 <script lang="ts">
@@ -10,9 +13,9 @@
 	import Button from '../components/Button.svelte';
 	import CascadingImages from '../components/CascadingImages.svelte';
 	import Compress from '../Compress';
+	import { isSearchPageOpen } from './SearchPage.svelte';
+	import { isProfilePageOpen } from './MyLibraryPage.svelte';
 
-	let popular: any[] = [];
-	let releases: any[] = [];
 	let isReady = false;
 	let cimsReady = false;
 	let timeout: NodeJS.Timeout;
@@ -54,6 +57,14 @@
 	async function nowOnline() {
 		popular = await window.anima.search({name: ''});
 		releases = await window.anima.search({name: '', date: '2021-01-01,2021-12-31'});
+
+		for (let j = 0; j < popular.length; j++) {
+			popular[j].background_image = await Compress.compress(popular[j].background_image, 400, 500);
+		}
+
+		for (let j = 0; j < releases.length; j++) {
+			releases[j].background_image = await Compress.compress(releases[j].background_image, 400, 500);
+		}
 	}
 	
 	onMount(async () => {
@@ -111,12 +122,14 @@
 						Popular <i class="fas fa-fire-alt text-orange"></i>
 					</div>
 					<div class="sc flex space-x-4 content-start overflow-x-scroll">
-						{#await Compress.compressFiles(popular.map(el => el.background_image), 400, 500) then images}
-							{#each popular as game, i (game.id)}
-								<Card on:click={() => { show = true; id = game.id; name = game.name; image = images[i]; }}
-											id={game.id} title={game.name} image={images[i]}/>
-							{/each}
-						{/await}
+						<!-- {#await Compress.compressFiles(popular.map(el => el.background_image), 400, 500) then images} -->
+							{#if !$isSearchPageOpen && !$isProfilePageOpen}
+								{#each popular as game, i (game.id)}
+									<Card on:click={() => { show = true; id = game.id; name = game.name; image = game.background_image; }}
+												id={game.id} title={game.name} image={game.background_image}/>
+								{/each}
+							{/if}
+						<!-- {/await} -->
 					</div>
 				</div>
 			
@@ -125,13 +138,15 @@
 						Big Releases <i class="fas fa-meteor text-yellow-400"></i>
 					</div>
 					<div class="sc flex space-x-4 content-start overflow-x-scroll">
-						{#await Compress.compressFiles(releases.map(el => el.background_image)) then images}
-							{#each releases as game, i (game.id)}
-								<Card on:click={() => { show = true; id = game.id; name = game.name; image = images[i]; }}
-											id={game.id} title={game.name} image={images[i]}/>
-							{/each}
-							{(() => { isReady = true; return ''; })()}
-						{/await}
+						<!-- {#await Compress.compressFiles(releases.map(el => el.background_image)) then images} -->
+							{#if !$isSearchPageOpen && !$isProfilePageOpen}
+								{#each releases as game, i (game.id)}
+									<Card on:click={() => { show = true; id = game.id; name = game.name; image = game.background_image; }}
+												id={game.id} title={game.name} image={game.background_image}/>
+								{/each}
+								{(() => { isReady = true; return ''; })()}
+							{/if}
+						<!-- {/await} -->
 					</div>
 				</div>
 			</div>

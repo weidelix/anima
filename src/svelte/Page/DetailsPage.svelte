@@ -28,6 +28,7 @@
 <script lang="ts">
 	import { onMount, createEventDispatcher } from 'svelte';
 	import { fade } from 'svelte/transition';
+	import User from '../User';
 
 	export let id = -1;
 	export let name = '';
@@ -38,7 +39,7 @@
 	const TITLE = 2;
 	const IMG = 3;
 
-	let gameData : any = {}; 
+	let gameData : any = { id: -9999 }; 
 	let metaColor = 'green';
 	let titleColor = 'transparent';
 	let lessDesc = '';
@@ -46,6 +47,8 @@
 	let showMore = false;
 	let favButton: HTMLDivElement;
 	let platforms: any[];
+	let inLibrary = false;
+	let inQueue = false;
 
 	function closeDetailsPage(e: MouseEvent | KeyboardEvent) {
 		if ((e as MouseEvent).button === 0 || (e as KeyboardEvent).key === 'Escape') {
@@ -72,7 +75,10 @@
 		showMore = !showMore;
 	}
 
-	onMount(() => {
+	onMount(async () => {
+		inLibrary = User.inLibrary(id);
+		inQueue = User.inQueue(id);
+		
 		dispatch('open');
 		getGameDetails();
 	});
@@ -106,8 +112,8 @@
 							out:send={{key:  transition ? IMG + id : null}}>
 				</div>
 				<div class="self-end {titleColor} mx-5"
-							in:receive={{key:  transition ? TITLE + id : null}}
-							out:send={{key:  transition ? TITLE + id : null}}>
+							in:receive={{key: transition ? TITLE + id : null}}
+							out:send={{key: transition ? TITLE + id : null}}>
 					<h1 class="text-3xl font-bold text-left">
 						{name === '' ? gameData.name : name}
 					</h1>
@@ -123,9 +129,22 @@
 			</div>
 			<div class="grid grid-cols-3 justify-around w-full my-3">
 				<div bind:this={favButton} class="flex flex-wrap flex-col justify-center transition duration-400 text-white hover:text-red-400 hover:bg-red-200 hover:bg-opacity-20 rounded-xl w-full h-full p-2"
-							on:click={() => {}}>
-					<i class="far fa-heart text-2xl self-center"></i>
-					<div class="text-xs text-center my-1">
+							on:click={() => {
+								if (!inLibrary && gameData !== {})
+									User.addToLibrary(gameData);
+								else
+									User.removeFromLibrary(gameData);
+
+								inLibrary = User.inLibrary(id);
+								dispatch('libraryUpdated')
+							}}>
+					<div class="{inLibrary ? '' : 'hidden'} flex justify-center w-full">
+						<i class="fas fa-heart self-center text-2xl text-red-400"></i>
+					</div>
+					<div class="{!inLibrary ? '' : 'hidden'} flex justify-center w-full">
+						<i class="far fa-heart self-center text-2xl"></i>
+					</div>
+					<div class="text-xs text-center my-1 {inLibrary ? 'text-red-400' : ''}">
 						Add to favorites
 					</div>
 				</div>

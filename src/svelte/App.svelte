@@ -7,34 +7,35 @@
 </script>
 
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { hasMaximizedCard } from './Page/DetailsPage.svelte';
 	import HomePage from './Page/HomePage.svelte';
-	import SearchPage from './Page/SearchPage.svelte';
+	import MyLibraryPage, { isProfilePageOpen } from './Page/MyLibraryPage.svelte';
+	import SearchPage, { isSearchPageOpen } from './Page/SearchPage.svelte';
+	import User from './User';
 	
 	let searchQuery = '';
-	let isSearching = false;
 	let inputElement: HTMLInputElement;
 
 	function enableSearch(e: KeyboardEvent | MouseEvent) {
 		if ((e as MouseEvent).button === 0 || (e as KeyboardEvent).key !== 'Escape') {
-			isSearching = true;
+			$isSearchPageOpen = true;
+			$isProfilePageOpen = false;
 		}
 
 		if ((e as KeyboardEvent).key === 'Escape') {
-			isSearching = false;
+			$isSearchPageOpen = false;
 		}
 	}
 
-	function closeSearchPage(e: KeyboardEvent) {
-		if (e.key === 'Escape' && isSearching && !$hasMaximizedCard) isSearching = false;
-	}
+	onMount(async () => {
+		await User.init();
+	})
 </script>
 
 <svelte:head>
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fredoka+One">
 </svelte:head>
-
-<svelte:body on:keydown={closeSearchPage}/>
 
 <div class="sc flex flex-col w-screen h-screen 
 						{$hasMaximizedCard ? 'overflow-hidden' : 'overflow-y-auto'} 
@@ -48,33 +49,51 @@
 		<div class="flex content-center font-main text-2xl text-white text-left">
 			<span class="text-white">anima</span>
 		</div>
-		<div class="flex flex-wrap  justify-end content-center h-10">
-			<div class="flex h-full">
+		<div class="flex flex-wrap justify-end content-center space-x-4 font-main">
+			<div class="flex flex-wrap justify-end content-center text-xl text-white"
+					 on:click={() => {$isProfilePageOpen = false; $isSearchPageOpen = false}}>
+				<div class="text-xs  hover:text-green-400 
+										transition duration-400">
+						Home
+				</div>
+			</div>
+			<div class="flex flex-wrap justify-end content-center mr-5 text-xl text-white"
+					 on:click={() => $isProfilePageOpen = true}>
+				<div class="text-xs {$isProfilePageOpen ? 'text-green-400' : ''} hover:text-green-400 
+										transition duration-400">
+						Library
+				</div>
+			</div>
+			<div class="flex h-full font-main">
 				<input bind:this={inputElement} bind:value={searchQuery}
-							class="align-middle p-3 text-sm placeholder-white text-white bg-transparent 
+							class="align-middle p-3 text-xs placeholder-white text-white bg-transparent 
 											border-b-2 border-transparent focus:border-green-400 
 											transition duration-400 outline-none"
 							placeholder="Search" 
 							on:keydown={enableSearch}
 							on:mousedown={enableSearch} 
 							on:focus={() => inputElement.select()}>
-				<div class:hidden={isSearching} on:click={enableSearch}>
+				<div class:hidden={$isSearchPageOpen} on:click={enableSearch}>
 					<i class="fas fa-search m-3 align-middle text-white hover:text-green-400 transition duration-400"></i>
 				</div>
-				<div class:hidden={!isSearching} on:click={() => searchQuery = ''}>
-					<i class="fas fa-times m-3 align-middle text-white hover:text-green-400 transition duration-400"></i>
+				<div class:hidden={!$isSearchPageOpen} on:click={() => searchQuery = ''}>
+					<i class="fas fa-times m-3 align-middle text-green-400 hover:text-green-400 transition duration-400"></i>
 				</div>
 			</div>
 		</div>
 	</div>
 	
 	<main class="sc flex-grow w-full">
-		<div class="{isSearching ? 'hidden' : ''}">
+		<div class:hidden={$isSearchPageOpen || $isProfilePageOpen}>
 			<HomePage/>
 		</div>
-		{#if isSearching}
+		{#if $isSearchPageOpen}
 			<div class="w-full h-full px-5 py-10">
 				<SearchPage query={searchQuery}/>
+			</div>
+		{:else if $isProfilePageOpen}
+			<div class="w-full h-full px-5 py-10">
+				<MyLibraryPage/>
 			</div>
 		{/if}	
 	</main>

@@ -1,5 +1,6 @@
 import { app, BrowserWindow, ipcMain, session } from 'electron';
 import path from 'path';
+import fs from 'fs';
 
 import '../../res/anima_icon.png';
 
@@ -140,6 +141,43 @@ app.whenReady().then(() => {
   ipcMain.on('open-website', (event, args) => {
     const { shell } = require('electron');
     shell.openExternal(args);
+  });
+
+  ipcMain.handle('read-user-profile', async (event, args) => {
+    let promise = new Promise<any>(async (resolve, reject) => {
+      fs.readFile(__dirname + '/user/profile.json', 'utf8', (err, data) => {
+        if (data) resolve(JSON.parse(data));
+        else if (err) throw err;
+      });
+    });
+
+    return promise;
+  });
+
+  ipcMain.on('write-user-profile', async (event, args) => {
+    fs.mkdir(__dirname + '/user', { recursive: true }, err => {
+      if (err) throw err;
+    });
+
+    fs.writeFile(__dirname + '/user/profile.json', args, err => {
+      if (err) throw err;
+    });
+  });
+
+  ipcMain.on('init', (event, args) => {
+    try {
+      fs.accessSync(__dirname + '/user/profile.json', fs.constants.F_OK);
+    }
+    catch (e) {
+      fs.mkdir(__dirname + '/user', { recursive: true }, err => {
+        if (err) throw err;
+      });
+  
+      fs.writeFile(__dirname + '/user/profile.json', "{\n\t\"library\": [], \n\t\"queue\": []\n}", 
+        err => {
+          if (err) throw err;
+      });
+    }
   });
 
   ipcMain.on('quit', (event, args) => {

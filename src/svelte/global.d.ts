@@ -12,6 +12,9 @@ interface WindowAPI extends Window {
 	},
 	
 	app: {
+		readUserProfile(): Promise<any>,
+		writeUserProfile(data: string): void,
+		init(): void,
 		quit(): void
 	}
 }
