@@ -3,7 +3,7 @@
 	import { crossfade } from 'svelte/transition';
 	import { writable } from 'svelte/store';
 	
-	export const hasMaximizedCard = writable(false);
+	export const details = writable({ transition: false, id: -9999, name: '', image: ''});
 	
 	declare let window : WindowAPI;
 
@@ -29,11 +29,7 @@
 	import { onMount, createEventDispatcher } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import User from '../User';
-
-	export let id = -1;
-	export let name = '';
-	export let image = '';
-	export let transition = true;
+	import page from '../pager/page';
 
 	const dispatch = createEventDispatcher();
 	const TITLE = 2;
@@ -53,12 +49,11 @@
 	function closeDetailsPage(e: MouseEvent | KeyboardEvent) {
 		if ((e as MouseEvent).button === 0 || (e as KeyboardEvent).key === 'Escape') {
 			dispatch('close');
-			$hasMaximizedCard = false;
 		}
 	}
 
 	async function getGameDetails() {
-		gameData = await window.anima.getDetails(id);
+		gameData = await window.anima.getDetails($details.id);
 
 		platforms = gameData.parent_platforms;
 		let score = gameData.metacritic;
@@ -76,8 +71,8 @@
 	}
 
 	onMount(async () => {
-		inLibrary = User.inLibrary(id);
-		inQueue = User.inQueue(id);
+		inLibrary = User.inLibrary($details.id);
+		inQueue = User.inQueue($details.id);
 		
 		dispatch('open');
 		getGameDetails();
@@ -89,7 +84,6 @@
 
 <div class="sc z-50 grid absolute overflow-auto
 					overscroll-contain left-0 text-white 
-					{(!hasMaximizedCard ? ' hidden ' : '')}
 					h-full w-full"
 		style="top: {window.scrollY}px"
 		on:scroll|stopPropagation
@@ -102,20 +96,21 @@
 							background-position: 0 -200px;
 							background-size: 1920px 1080px;">
 	
-		<div class="flex flex-wrap content-start justify-end absolute w-full" on:click={closeDetailsPage}>
+		<div class="flex flex-wrap content-start justify-end absolute w-full" on:click={() => page.back()}>
 			<i class="fas fa-times text-2xl cursor-pointer m-4 transition duration-400 text-white hover:text-green-400"></i>
 		</div>
 		<div class="flex flex-col h-full p-5 bg-gradient-to-t from-main-color via-main-color">
 			<div class="flex flex-cols w-full">
-				<div class="bg-cover bg-top bg-white rounded-xl w-56 h-72" style="background-image: url({image === '' ? gameData.background_image : image})"
-							in:receive={{key: transition ? IMG + id : null}}
-							out:send={{key:  transition ? IMG + id : null}}>
+				<div class="bg-cover bg-top bg-white rounded-xl w-56 h-72" 
+						 style="background-image: url({$details.image === '' ? gameData.background_image : $details.image})"
+						 in:receive={{key: $details.transition ? IMG + $details.id : null}}
+						 out:send={{key:  $details.transition ? IMG + $details.id : null}}>
 				</div>
 				<div class="self-end {titleColor} mx-5"
-							in:receive={{key: transition ? TITLE + id : null}}
-							out:send={{key: transition ? TITLE + id : null}}>
+							in:receive={{key: $details.transition ? TITLE + $details.id : null}}
+							out:send={{key: $details.transition ? TITLE + $details.id : null}}>
 					<h1 class="text-3xl font-bold text-left">
-						{name === '' ? gameData.name : name}
+						{$details.name === '' ? gameData.name : $details.name}
 					</h1>
 					{#if gameData.developers}
 						<div class="text-white text-base text-left">{gameData.developers[0].name}</div>
@@ -135,7 +130,7 @@
 								else
 									User.removeFromLibrary(gameData);
 
-								inLibrary = User.inLibrary(id);
+								inLibrary = User.inLibrary($details.id);
 								dispatch('libraryUpdated')
 							}}>
 					<div class="{inLibrary ? '' : 'hidden'} flex justify-center w-full">

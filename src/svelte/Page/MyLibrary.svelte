@@ -7,17 +7,14 @@
 
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import DetailsPage, { hasMaximizedCard } from './DetailsPage.svelte';
 	import FloatingPanel from '../components/FloatingPanel.svelte';
 	import Card from '../components/Card.svelte';
 	import User from '../User';
 	import quick from '../Quicksort';
+	import page from '../pager/page';
+	import { details } from './Details.svelte';
 
 	let library: any[] = []
-	let show = false;
-	let id = -1;
-	let image = '';
-	let name = '';
 	let sortButton: HTMLButtonElement;
 	let top = 10;
 	let right = 10
@@ -26,7 +23,7 @@
 	let profile = 'favorites';
 
 	function closeProfilePage(e: KeyboardEvent) {
-		if (!$hasMaximizedCard && e.key === 'Escape') {
+		if (e.key === 'Escape') {
 			$isProfilePageOpen = false;
 		}
 	}
@@ -45,12 +42,6 @@
 </script>
 
 <svelte:body on:keydown={closeProfilePage}/>
-
-{#if show}
-	<DetailsPage on:close={() => show = false} 
-							 on:libraryUpdated={() => library = User.readLibrary()}
-							 {id} {name} {image}/>
-{/if}
 
 <div class="flex flex-col w-full h-full pt-10">
 	<div class="flex justify-between w-full rounded-xl">
@@ -125,8 +116,9 @@
 					{#if library.length > 0}
 						{#each library as card}
 							<div class="m-2">
-								<Card on:click={() => { show = true; id = card.id; name = card.name; 
-																				image = card.background_image }}
+								<Card on:click={() => { 
+												page.go('details');
+												$details = {transition: true, id: card.id, name: card.name, image: card.background_image }}}
 											title={card.name} image={card.background_image} id={card.id}/>
 							</div>
 						{/each}

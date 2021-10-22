@@ -72,6 +72,7 @@
 		"electron-reload": "^2.0.0-alpha.1",
 		"electron-squirrel-startup": "^1.0.0",
 		"node-sass": "^6.0.1",
+		"page": "^1.11.6",
 		"party-js": "^2.0.1",
 		"sirv-cli": "^1.0.0",
 		"stream-to-blob": "^2.0.1"

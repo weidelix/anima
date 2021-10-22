@@ -8,7 +8,8 @@
 	import { scrollY } from '../App.svelte';
 	import CascadingImage from './CascadingImage.svelte';
 	import Compress from '../Compress';
-	import DetailsPage, { hasMaximizedCard } from '../Page/DetailsPage.svelte';
+	import { details } from '../Page/Details.svelte';
+	import page from '../pager/page';
 
 	export let ready = false;
 
@@ -21,7 +22,6 @@
 	let rating;
 	let i = 0;
 	let timeout: NodeJS.Timeout;
-	let show = false;
 	let id = -1;
 	
 	onMount(async () => {
@@ -62,12 +62,6 @@
 	}
 </script>
 
-{#if show}
-	<DetailsPage on:close={() => { show = false; change(i); }}
-							 on:open={() => clearTimeout(timeout)} 
-							 transition={false} id={id} image={bigImage} name={bigText}/>
-{/if}
-
 <div class="w-full h-screen mb-8 overscroll-auto" style="height: 100vh;">
 	<div class="w-full h-full bg-top bg-cover bg-no-repeat" 
 		   style="background-image: url('{bigImage}');
@@ -75,7 +69,7 @@
 		<div class="bg-gradient-to-t from-main-color via-transparent w-full h-full">
 			<div class="bg-gradient-to-r from-main-color via-transparent w-full h-full">
 				<div class="flex flex-col space-between text-white h-full">
-					{#if ready && !$hasMaximizedCard}
+					{#if ready}
 						<div class="flex-grow p-20">
 						<div class="flex flex-col flex-wrap justify-center h-full" in:fly={{delay: 300, x: -100}}>
 							<div class="text-base">
@@ -87,7 +81,16 @@
 								{bigText}
 							</div>
 								<button class="w-28 mt-6 px-4 py-2 transition bg-gray-500 bg-opacity-30 hover:bg-opacity-50 rounded"
-									on:click={() => {$hasMaximizedCard = true; show = true; }}>
+									on:click={() => {
+											$details = {
+												transition: false,
+												id: id,
+												name: bigText,
+												image: bigImage
+											};
+
+											page.go('/details');
+										}}>
 									Check out
 								</button>
 							</div>

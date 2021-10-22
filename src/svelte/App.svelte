@@ -2,29 +2,35 @@
 	import { writable } from 'svelte/store';
 	
 	export const scrollY = writable(0); 
-	
+	export const query = writable('');
+
 	declare let window : WindowAPI; 
 </script>
 
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { hasMaximizedCard } from './Page/DetailsPage.svelte';
-	import HomePage from './Page/HomePage.svelte';
-	import MyLibraryPage, { isProfilePageOpen } from './Page/MyLibraryPage.svelte';
-	import SearchPage, { isSearchPageOpen } from './Page/SearchPage.svelte';
+	import Details from './Page/Details.svelte';
+	import Home from './Page/Home.svelte';
+	import MyLibrary from './Page/MyLibrary.svelte';
+	import Search  from './Page/Search.svelte';
 	import User from './User';
+	import Router, { activeRoute } from './pager/Router.svelte';
+	import Route from './pager/Route.svelte';
+	import page from './pager/page';
 	
-	let searchQuery = '';
 	let inputElement: HTMLInputElement;
 
 	function enableSearch(e: KeyboardEvent | MouseEvent) {
+		if((e as KeyboardEvent).key === 'Enter') {
+			$query = inputElement.value;
+		}
+
 		if ((e as MouseEvent).button === 0 || (e as KeyboardEvent).key !== 'Escape') {
-			$isSearchPageOpen = true;
-			$isProfilePageOpen = false;
+			page.go('/search');
 		}
 
 		if ((e as KeyboardEvent).key === 'Escape') {
-			$isSearchPageOpen = false;
+			page.back();
 		}
 	}
 
@@ -38,8 +44,7 @@
 </svelte:head>
 
 <div class="sc flex flex-col w-screen h-screen 
-						{$hasMaximizedCard ? 'overflow-hidden' : 'overflow-y-auto'} 
-						bg-main-color"
+						overflow-y-auto bg-main-color"
 		on:scroll={(e) => $scrollY = e.currentTarget.scrollTop}>
 
 	<!-- Bar -->
@@ -51,21 +56,21 @@
 		</div>
 		<div class="flex flex-wrap justify-end content-center space-x-4 font-main">
 			<div class="flex flex-wrap justify-end content-center text-xl text-white"
-					 on:click={() => {$isProfilePageOpen = false; $isSearchPageOpen = false}}>
+					 on:click={() => page.go('/')}>
 				<div class="text-xs  hover:text-green-400 
 										transition duration-400">
 						Home
 				</div>
 			</div>
 			<div class="flex flex-wrap justify-end content-center mr-5 text-xl text-white"
-					 on:click={() => $isProfilePageOpen = true}>
-				<div class="text-xs {$isProfilePageOpen ? 'text-green-400' : ''} hover:text-green-400 
+					 on:click={() => page.go('/library') }>
+				<div class="text-xs {$activeRoute.path === '/library' ? 'text-green-400' : ''} hover:text-green-400 
 										transition duration-400">
 						Library
 				</div>
 			</div>
 			<div class="flex h-full font-main">
-				<input bind:this={inputElement} bind:value={searchQuery}
+				<input bind:this={inputElement}
 							class="align-middle p-3 text-xs placeholder-white text-white bg-transparent 
 											border-b-2 border-transparent focus:border-green-400 
 											transition duration-400 outline-none"
@@ -73,10 +78,10 @@
 							on:keydown={enableSearch}
 							on:mousedown={enableSearch} 
 							on:focus={() => inputElement.select()}>
-				<div class:hidden={$isSearchPageOpen} on:click={enableSearch}>
+				<div class:hidden={$activeRoute.path === '/search'} on:click={enableSearch}>
 					<i class="fas fa-search m-3 align-middle text-white hover:text-green-400 transition duration-400"></i>
 				</div>
-				<div class:hidden={!$isSearchPageOpen} on:click={() => searchQuery = ''}>
+				<div class:hidden={$activeRoute.path !== '/search'} on:click={() => $query = ''}>
 					<i class="fas fa-times m-3 align-middle text-green-400 hover:text-green-400 transition duration-400"></i>
 				</div>
 			</div>
@@ -84,18 +89,12 @@
 	</div>
 	
 	<main class="sc flex-grow w-full">
-		<div class:hidden={$isSearchPageOpen || $isProfilePageOpen}>
-			<HomePage/>
-		</div>
-		{#if $isSearchPageOpen}
-			<div class="w-full h-full px-5 py-10">
-				<SearchPage query={searchQuery}/>
-			</div>
-		{:else if $isProfilePageOpen}
-			<div class="w-full h-full px-5 py-10">
-				<MyLibraryPage/>
-			</div>
-		{/if}	
+		<Router>
+			<Route path="/" component={Home}/>
+			<Route path="/search" component={Search}/>
+			<Route path="/library" component={MyLibrary}/>
+			<Route path="/details" component={Details}/>
+		</Router>
 	</main>
 </div>
 
