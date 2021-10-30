@@ -27,7 +27,6 @@
 
 	function pickup() {
 		onPickup = true;
-		// isDragging = true;
 		$selected = id;
 	}
 	
