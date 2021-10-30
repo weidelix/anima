@@ -61,10 +61,10 @@
 		</h1>
 		<div class="flex justify-center mt-10 space-x-4 font-bold">
 			<div class="w-20">
-				<Button on:click={() => checkConnection(3000)} color={'green'}>Retry</Button>
+				<Button class="w-full" on:click={() => checkConnection(3000)} color={'green'}>Retry</Button>
 			</div>
 			<div class="w-20">
-				<Button on:click={() => window.app.quit()} color={'red'}>Exit</Button>
+				<Button class="w-full" on:click={() => window.app.quit()} color={'red'}>Exit</Button>
 			</div>
 		</div>
 	</div>
@@ -84,8 +84,7 @@
 		</div>
 	{:else}
 		<div class="w-full h-full bg-main-color flex flex-col flex-wrap content-center 
-								justify-center text-white z-50 bg-center bg-no-repeat"
-				out:fade>
+								justify-center text-white z-50 bg-center bg-no-repeat">
 			<div class="flex justify-center animate-spin mt-10">
 				<i class="fas fa-circle-notch text-4xl"></i>
 			</div>

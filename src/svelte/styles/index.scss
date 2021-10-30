@@ -4,6 +4,25 @@
 
 @import '@fortawesome/fontawesome-free/css/all.css';
 
+body {
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+.tooltip {
+	visibility: hidden;
+	transition: all;
+	left: calc(-50%);
+}
+
+button:hover .tooltip {
+	visibility: visible;
+}
+
 .sc::-webkit-scrollbar {
   width: 5px;
   height: 5px;

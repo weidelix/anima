@@ -19,6 +19,7 @@
 	let bigText = 'Title';
 	let bigSubText = 'Subtext';
 	let bigImage = '';
+	let platforms: any[] = [];
 	let rating;
 	let i = 0;
 	let timeout: NodeJS.Timeout;
@@ -42,7 +43,7 @@
 	
 	async function change(value: number) {
 		clearTimeout(timeout);
-		
+
 		i = value;
 
 		if (i !== banners.length) {
@@ -50,7 +51,8 @@
 			bigText = banners[i].name;
 			bigSubText = banners[i].developers[0].name;
 			bigImage = banners[i].background_image;
-			rating = banners[i].rating
+			platforms = banners[i].parent_platforms;
+			rating = banners[i].rating;
 		} 
 		else {
 			change(0);
@@ -72,10 +74,26 @@
 					{#if ready}
 						<div class="flex-grow p-20">
 						<div class="flex flex-col flex-wrap justify-center h-full" in:fly={{delay: 300, x: -100}}>
-							<div class="text-base">
-								{bigSubText}
-								  •  
-								{rating}
+							<div class="flex flex-row space-x-1 text-base">
+								{bigSubText}&nbsp • &nbsp;  
+									<div class:hidden={!(platforms.some(el => el.platform.slug === "xbox"))}>
+										<i class="fab fa-xbox text-xbox text-xl"></i>
+									</div>
+									<div class:hidden={!(platforms.some(el => el.platform.slug === "playstation"))}>
+										<i class="fab fa-playstation text-blue-500 text-xl"></i>
+									</div>
+									<div class:hidden={!(platforms.some(el => el.platform.slug === "pc"))}>
+										<i class="fab fa-windows text-blue-400 text-xl"></i>
+									</div>
+									<div class:hidden={!(platforms.some(el => el.platform.slug === "mac"))}>
+										<i class="fab fa-apple text-gray-200 text-xl"></i>
+									</div>
+									<div class:hidden={!(platforms.some(el => el.platform.slug === "linux"))}>
+										<i class="fab fa-linux text-white text-xl"></i>
+									</div>
+									<div class:hidden={!(platforms.some(el => el.platform.slug === "android"))}>
+										<i class="fab fa-android text-green-500 text-xl"></i>
+									</div>
 							</div>
 							<div class="text-6xl font-bold">
 								{bigText}

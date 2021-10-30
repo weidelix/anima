@@ -54,20 +54,20 @@
 		<div class="flex content-center font-main text-2xl text-white text-left">
 			<span class="text-white">anima</span>
 		</div>
-		<div class="flex flex-wrap justify-end content-center space-x-4 font-main">
+		<div class="flex flex-wrap justify-end content-center space-x-3 font-main">
 			<div class="flex flex-wrap justify-end content-center text-xl text-white"
 					 on:click={() => page.go('/')}>
-				<div class="text-xs  hover:text-green-400 
+				<button class="text-xs  hover:text-green-400 
 										transition duration-400">
 						Home
-				</div>
+				</button>
 			</div>
 			<div class="flex flex-wrap justify-end content-center mr-5 text-xl text-white"
 					 on:click={() => page.go('/library') }>
-				<div class="text-xs {$activeRoute.path === '/library' ? 'text-green-400' : ''} hover:text-green-400 
+				<button class="text-xs {$activeRoute.path === '/library' ? 'text-green-400' : ''} hover:text-green-400 
 										transition duration-400">
 						Library
-				</div>
+				</button>
 			</div>
 			<div class="flex h-full font-main">
 				<input bind:this={inputElement}
@@ -78,12 +78,12 @@
 							on:keydown={enableSearch}
 							on:mousedown={enableSearch} 
 							on:focus={() => inputElement.select()}>
-				<div class:hidden={$activeRoute.path === '/search'} on:click={enableSearch}>
+				<button class:hidden={$activeRoute.path === '/search'} on:click={enableSearch}>
 					<i class="fas fa-search m-3 align-middle text-white hover:text-green-400 transition duration-400"></i>
-				</div>
-				<div class:hidden={$activeRoute.path !== '/search'} on:click={() => $query = ''}>
+				</button>
+				<button class:hidden={$activeRoute.path !== '/search'} on:click={() => $query = ''}>
 					<i class="fas fa-times m-3 align-middle text-green-400 hover:text-green-400 transition duration-400"></i>
-				</div>
+				</button>
 			</div>
 		</div>
 	</div>

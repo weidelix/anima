@@ -17,9 +17,9 @@
 	import quick from '../Quicksort';
 	import Compress from '../Compress';
 	import page from '../pager/page';
-import { activeRoute } from "../pager/Router.svelte";
+	import { activeRoute } from "../pager/Router.svelte";
 
-	let emptySearchMessages = [
+	const emptySearchMessages = [
 		'Try checking your speeling',
 		'What\'s that?',
 		'Try again in the future',
@@ -27,7 +27,7 @@ import { activeRoute } from "../pager/Router.svelte";
 		'Try asking your mom'
 	];
 
-	let emptySearchEmoticons = [
+	const emptySearchEmoticons = [
 		'¯\\_(ツ)_/¯',
 		'( • - • )?',
 		'(✿ •︡ ︹ •︠ )',
@@ -45,7 +45,7 @@ import { activeRoute } from "../pager/Router.svelte";
 	let right = 10
 	let openSortBy = false;
 	let sortedBy = 'relevance';
-	let searchReady = false;;
+	let searchReady = false;
 
 	function setPosition() {
 		openSortBy = !openSortBy;
@@ -55,13 +55,25 @@ import { activeRoute } from "../pager/Router.svelte";
 	};
 
 	async function search(name: string) {
+		searchReady = false;
+		
 		if ($query !== '') {
+
 			let searchedGames = await window.anima.search({name: $query});
 			
 			bestResultGames   = searchedGames.filter(game => game.name.toLowerCase().includes($query.toLowerCase()));
 			relatedGames      = searchedGames.filter(game => !game.name.toLowerCase().includes($query.toLowerCase()));
-			relevanceList 		= [...bestResultGames];
-		} 
+		}
+		
+		for (let j = 0; j < bestResultGames.length; j++) {
+			bestResultGames[j].background_image = await Compress.compress(bestResultGames[j].background_image, 400, 500);
+		}
+		
+		for (let j = 0; j < relatedGames.length; j++) {
+			relatedGames[j].background_image = await Compress.compress(relatedGames[j].background_image, 400, 500);
+		}
+
+		relevanceList = [...bestResultGames];
 	}
 
 	function addToRecents(game: any) {
@@ -105,7 +117,7 @@ import { activeRoute } from "../pager/Router.svelte";
 <svelte:body on:keydown={closeSearchPage}/>
 
 <div bind:this={container} class="w-full h-full {searchReady ? 'px-5 mt-20' : ''}">
-	{#if bestResultGames.length + relatedGames.length !== 0 && $query !== ''}
+	{#if bestResultGames.length + relatedGames.length !== 0 && $query !== '' && $activeRoute.path === '/search'}
 		<Loading ready={searchReady}>
 			{#if bestResultGames.length !== 0}
 				<div class="flex justify-between">
@@ -164,14 +176,15 @@ import { activeRoute } from "../pager/Router.svelte";
 				</div>
 				<div class="sc flex space-x-2 content-start overflow-x-scroll my-2">
 					{#each bestResultGames as game, i (game.id)}
-						{#await Compress.compress(game.background_image, 400, 500) then bg}
-							<Card on:click={() => { 
-									addToRecents(game);
-									$details = { transition: true, id: game.id, name: game.name, image: bg };
-									page.go('/details');
-								}}
-										id={game.id} title={game.name} image={bg}/>
-						{/await}
+						<Card on:click={() => { 
+										addToRecents(game);
+										$details = { transition: true, id: game.id, name: game.name, image: game.background_image };
+										page.go('/details');
+									}}
+								id={game.id} title={game.name} image={game.background_image}/>
+						{#if relatedGames.length === 0 && i === bestResultGames.length - 1}
+							{(() => { searchReady = true; return ''; })()}
+						{/if}
 					{/each}
 				</div>
 			{/if}
@@ -179,15 +192,13 @@ import { activeRoute } from "../pager/Router.svelte";
 			<div class="text-white text-left font-bold text-xl my-2">Related</div>
 			<div class="sc flex flex-col justify-start 'space-y-2' overflow-x-scroll">
 				{#each relatedGames as game, i (game.id)}
-					{#await Compress.compress(game.background_image, 300, 400) then bg}
-						<Card on:click={() => { 
-										addToRecents(game);
-										$details = { transition: true, id: game.id, name: game.name, image: bg };
-										page.go('/details');
-									}}
-									id={game.id} title={game.name} image={bg}/>
-					{/await}
-					{#if i === bestResultGames.length - 1}
+					<Card on:click={() => { 
+									addToRecents(game);
+									$details = { transition: true, id: game.id, name: game.name, image: game.background_image };
+									page.go('/details');
+								}}
+								id={game.id} title={game.name} image={game.background_image}/>
+					{#if i === relatedGames.length - 1}
 						{(() => { searchReady = true; return ''; })()}
 					{/if}
 				{/each}
@@ -219,14 +230,12 @@ import { activeRoute } from "../pager/Router.svelte";
 			<div class="sc flex flex-row space-x-2 content-start overflow-x-scroll">
 				{#each $recentSearches as game, i (game.id)}
 					<div in:fly={{duration: 400 + (100 * i), x: 100}}>
-						{#await Compress.compress(game.background_image) then image}
-							<Card on:click={() => { 
-											addToRecents(game);
-											$details = { transition: true, id: game.id, name: game.name, image: image };
-											page.go('/details');
-										}} 
-										id={game.id} title={game.name} image={image}/>
-						{/await}
+						<Card on:click={() => { 
+										addToRecents(game);
+										$details = { transition: true, id: game.id, name: game.name, image: game.background_image };
+										page.go('/details');
+									}} 
+									id={game.id} title={game.name} image={game.background_image}/>
 					</div>
 				{/each}
 			</div>

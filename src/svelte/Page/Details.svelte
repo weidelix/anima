@@ -131,7 +131,7 @@
 									User.removeFromLibrary(gameData);
 
 								inLibrary = User.inLibrary($details.id);
-								dispatch('libraryUpdated')
+								dispatch('libraryUpdated');
 							}}>
 					<div class="{inLibrary ? '' : 'hidden'} flex justify-center w-full">
 						<i class="fas fa-heart self-center text-2xl text-red-400"></i>
@@ -140,13 +140,31 @@
 						<i class="far fa-heart self-center text-2xl"></i>
 					</div>
 					<div class="text-xs text-center my-1 {inLibrary ? 'text-red-400' : ''}">
-						Add to favorites
+						{#if inLibrary}
+							Remove from favorites
+						{:else}
+							Add to favorites
+						{/if}
 					</div>
 				</div>
-				<div class="flex flex-wrap flex-col justify-center transition duration-400 text-white hover:text-yellow-400 hover:bg-yellow-200 hover:bg-opacity-20 rounded-xl w-full h-full p-2">
+				<div class="flex flex-wrap flex-col justify-center transition duration-400 text-white hover:text-yellow-400 hover:bg-yellow-200 hover:bg-opacity-20 rounded-xl w-full h-full p-2
+										{inQueue ? 'text-yellow-400' : ''}"
+							on:click={() => {
+								if (!inQueue && gameData !== {})
+									User.addToQueue(gameData);
+								else
+									User.removeFromQueue(gameData);
+
+								inQueue = User.inQueue($details.id);
+								dispatch('queueUpdated')
+							}}>
 					<i class="fas fa-layer-group text-2xl self-center"></i>
 					<div class="text-xs text-center my-1">
-						Queue game
+						{#if inQueue}
+							Queued
+						{:else}
+							Queue game
+						{/if}
 					</div>
 				</div>
 				<div class="flex flex-wrap flex-col justify-center transition duration-400 text-white hover:text-blue-400 hover:bg-blue-200 hover:bg-opacity-20 rounded-xl w-full h-full p-2"

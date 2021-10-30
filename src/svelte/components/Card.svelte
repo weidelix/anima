@@ -1,15 +1,15 @@
 <script lang="ts">
 	import { send, receive } from '../Page/Details.svelte';
 	import { createEventDispatcher } from 'svelte';
-
-	const dispatch = createEventDispatcher();
-
+	
 	export let id = -1;
 	export let title = '';
 	export let image = '';
-
+	
+	const dispatch = createEventDispatcher();
 	const TITLE = 2;
 	const IMG = 3;
+
 </script>
 
 <div class="flex flex-wrap place-items-center cursor-pointer"

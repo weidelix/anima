@@ -36,6 +36,6 @@
   onDestroy(page.stop);
 </script>
  
-<div class="w-full h-full" on:keydown={() => console.log('hey')}>
+<div class="w-full h-full">
 	<slot/>
 </div>

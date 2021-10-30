@@ -35,13 +35,13 @@
 <Loading ready={isReady}>
 	<CascadingImages on:ready={() => cimsReady = true} ready={isReady}/>
 	{#if cimsReady && $activeRoute.path === '/'}
-		<div class="flex flex-col space-y-4 px-5 mt-10">
+		<div class="flex flex-col space-y-4 px-5 mt-20">
 			<div>
 				<div class="text-white text-left text-2xl font-bold my-2">
 					Popular <i class="fas fa-fire-alt text-orange"></i>
 				</div>
 				<div class="sc flex space-x-4 content-start overflow-x-scroll">
-					{#each popular as game (game.id)}
+					{#each popular as game}
 						<Card on:click={() => {
 										$details = { transition: true, id: game.id, name: game.name, image: game.background_image };
 										page.go('/details');
@@ -56,16 +56,14 @@
 					Big Releases <i class="fas fa-meteor text-yellow-400"></i>
 				</div>
 				<div class="sc flex space-x-4 content-start overflow-x-scroll">
-					{#each releases as game, i (game.id)}
+					{#each releases as game}
 						<Card on:click={() => {
 										$details = { transition: true, id: game.id, name: game.name, image: game.background_image };
 										page.go('/details');
 									}}
 									id={game.id} title={game.name} image={game.background_image}/>
-						{#if i === releases.length - 1}
-							{(() => { isReady = true; return ''; })()}
-						{/if}
 					{/each}
+					{(() => { isReady = true; return ''; })()}
 				</div>
 			</div>
 		</div>

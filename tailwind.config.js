@@ -24,7 +24,7 @@ const config = {
 		backgroundColor: theme => ({
 			...theme('colors'),
 			'main-color': '#212121',
-			'sub-color': '#383838',
+			'sub-color': '#282828',
 			'accent-green': '#34D399' 
 		}),
 		gradientColorStops: theme => ({
@@ -32,6 +32,9 @@ const config = {
 			'main-color': '#212121',
 			'accent-green': '#34D399' 
 		}),
+		minWidth: {
+			'tooltip-min': '4.2rem'
+		},
 		extend: {
 			outline: {
 				'accent-green': ['4px solid #34D399']

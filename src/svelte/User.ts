@@ -1,3 +1,5 @@
+import { writable } from 'svelte/store';
+
 declare const window: WindowAPI;
 
 interface User {
@@ -5,52 +7,95 @@ interface User {
 	queue: any[]
 }
 
-let profile: User;
+export const profile = writable({library: [], queue: []});
 
 async function init () {
-	profile = await window.app.readUserProfile();
+	profile.set(await window.app.readUserProfile());
 }
 
 async function addToLibrary(game: any) {
 	if (!inLibrary(game) && game.id !== -9999) {
-		profile.library.push(game);
-
-		window.app.writeUserProfile(JSON.stringify(profile));
+		profile.update(value => {
+			value.library.push(game);
+			window.app.writeUserProfile(JSON.stringify(value));
+			return value;
+		});
 	}
 }
 
 async function addToQueue(game: any) {
 	if (!inQueue(game) && game.id !== -9999) {
-		profile.queue.push(game);
-	
-		window.app.writeUserProfile(JSON.stringify(profile));
+		profile.update(value => {
+			value.queue.push(game);
+			window.app.writeUserProfile(JSON.stringify(value));
+			return value;
+		});
 	}
 }
 
 async function removeFromLibrary(game: any) {
-	profile.library = profile.library.filter(el => el.id !== game.id);
-	window.app.writeUserProfile(JSON.stringify(profile));
+	profile.update(value => {
+		value.library = value.library.filter(el => el.id !== game.id);
+		window.app.writeUserProfile(JSON.stringify(value));
+		return value;
+	});
 }
 
 async function removeFromQueue(game: any) {
-	profile.queue = profile.queue.filter(el => el.id !== game.id);
-	window.app.writeUserProfile(JSON.stringify(profile));
+	profile.update(value => {
+		value.queue = value.queue.filter(el => el.id !== game.id);
+		window.app.writeUserProfile(JSON.stringify(value));
+		return value;
+	});
 }
 
-function readLibrary(): any[] {
-	return profile.library;
+function isFirstGame(game: number) {
+	let isFirst = false;
+
+	profile.update(value => {
+		isFirst = value.queue[0].id === game;
+		return value;
+	});
+
+	return isFirst;
 }
 
-function readQueue(): any[] {
-	return profile.queue;
+function writeLibrary(array: any[]) {
+	profile.update(value => {
+		value.library = array;
+		window.app.writeUserProfile(JSON.stringify(value));
+		return value;
+	});
+}
+
+function writeQueue(array: any[]) {
+	profile.update(value => {
+		value.queue = array;
+		window.app.writeUserProfile(JSON.stringify(value));
+		return value;
+	});
 }
 
 function inLibrary(game: number): boolean {
-	return profile.library.some(({id}) => id === game);
+	let inLibrary = false;
+
+	profile.update(value => {
+		inLibrary = value.library.some(({id}) => id === game);
+		return value;
+	});
+
+	return inLibrary;
 }
 
 function inQueue(game: number): boolean {
-	return profile.queue.some(({id}) => id === game);
+	let inQueue = false;
+
+	profile.update(value => {
+		inQueue = value.queue.some(({id}) => id === game);
+		return value;
+	});
+
+	return inQueue;
 }
 
 export default {
@@ -59,8 +104,9 @@ export default {
 	addToQueue,
 	removeFromLibrary,
 	removeFromQueue,
-	readLibrary,
-	readQueue,
+	isFirstGame,
+	writeLibrary,
+	writeQueue,
 	inLibrary,
 	inQueue
 }
