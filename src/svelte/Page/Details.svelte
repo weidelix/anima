@@ -3,7 +3,12 @@
 	import { crossfade } from 'svelte/transition';
 	import { writable } from 'svelte/store';
 	
-	export const details = writable({ transition: false, id: -9999, name: '', image: ''});
+	export const details = writable({ 
+		unique: 0,
+		transition: false, 
+		id: -9999, 
+		name: '', 
+		image: ''});
 	
 	declare let window : WindowAPI;
 
@@ -82,10 +87,11 @@
 
 <svelte:body on:keydown={closeDetailsPage}/>
 
-<div class="sc z-50 grid absolute overflow-auto
+<div class="sc grid absolute overflow-auto
 					overscroll-contain left-0 text-white 
 					h-full w-full"
-		style="top: {window.scrollY}px"
+		style="top: {window.scrollY}px;
+					 z-index: 99999"
 		on:scroll|stopPropagation
 		transition:fade={{duration: 200}}>
 
@@ -103,12 +109,12 @@
 			<div class="flex flex-cols w-full">
 				<div class="bg-cover bg-top bg-white rounded-xl w-56 h-72" 
 						 style="background-image: url({$details.image === '' ? gameData.background_image : $details.image})"
-						 in:receive={{key: $details.transition ? IMG + $details.id : null}}
-						 out:send={{key:  $details.transition ? IMG + $details.id : null}}>
+						 in:receive={{key: $details.transition ? IMG + $details.id + $details.unique : null}}
+						 out:send={{key:  $details.transition ? IMG + $details.id + $details.unique : null}}>
 				</div>
 				<div class="self-end {titleColor} mx-5"
-							in:receive={{key: $details.transition ? TITLE + $details.id : null}}
-							out:send={{key: $details.transition ? TITLE + $details.id : null}}>
+							in:receive={{key: $details.transition ? TITLE + $details.id + $details.unique : null}}
+							out:send={{key: $details.transition ? TITLE + $details.id + $details.unique: null}}>
 					<h1 class="text-3xl font-bold text-left">
 						{$details.name === '' ? gameData.name : $details.name}
 					</h1>

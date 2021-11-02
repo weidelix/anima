@@ -15,8 +15,8 @@ if (require('electron-squirrel-startup')) { // eslint-disable-line global-requir
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    minWidth: 640,
-    minHeight: 480,
+    minWidth: 1366,
+    minHeight: 736,
     darkTheme: true,
     icon: path.join(__dirname, 'res/anima_icon.png'),
     webPreferences: {

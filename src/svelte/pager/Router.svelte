@@ -2,6 +2,7 @@
 	import { writable } from 'svelte/store';
 
 	export const activeRoute = writable({path: '', component: null});
+	export const prevPath = writable('/');
 	
 	const routes: any = {};
 
@@ -19,6 +20,7 @@
 	const last = (route) => {
 		return function () {
 			$activeRoute = { ...route };
+			$prevPath = page.prev();
 		};
 	};
 
@@ -36,6 +38,4 @@
   onDestroy(page.stop);
 </script>
  
-<div class="w-full h-full">
-	<slot/>
-</div>
+<slot/>

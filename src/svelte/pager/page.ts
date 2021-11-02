@@ -28,7 +28,12 @@ function stop() {
 	started = false;
 }
 
+function prev() {
+	return recent;
+}
+
 export default {
+	prev,
 	go,
 	back,
 	add,

@@ -1,6 +1,6 @@
 // Quicksort algorithm
 
-export function sort(arr: any[], comparator: (el1: any, el2: any) => boolean) {
+export function sort(arr: any[], comparator: (el1: any, el2: any) => boolean): any[] {
 	let low = 0;
 	let high = arr.length - 1;
 
@@ -10,6 +10,8 @@ export function sort(arr: any[], comparator: (el1: any, el2: any) => boolean) {
 		sortRec(arr, low, partIndex - 1, comparator);
 		sortRec(arr, partIndex + 1, high, comparator);
 	}
+
+	return arr;
 }
 
 function sortRec(arr: any[], low: number, high: number, comparator: (el1: any, el2: any) => boolean) {
@@ -38,10 +40,6 @@ function partition(arr: any[], low: number, high: number, comparator: (el1: any,
 }
 
 // Sorting order
-
-export function byRelevance() {
-
-}
 
 export function byNameAtoZ(a: any, b: any) {
 	let val = a.name.localeCompare(b.name);
@@ -77,11 +75,8 @@ export function byReleaseDesc(a: any, b: any) {
 
 export default {
 	sort,
-
-	// Sorting order
 	byNameAtoZ,
 	byNameZtoA,
-	byRelevance,
 	byReleaseAsc,
 	byReleaseDesc
 };

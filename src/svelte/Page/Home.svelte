@@ -43,7 +43,7 @@
 				<div class="sc flex space-x-4 content-start overflow-x-scroll">
 					{#each popular as game}
 						<Card on:click={() => {
-										$details = { transition: true, id: game.id, name: game.name, image: game.background_image };
+										$details = { unique: 0, transition: true, id: game.id, name: game.name, image: game.background_image };
 										page.go('/details');
 									}}
 									id={game.id} title={game.name} image={game.background_image}/>
@@ -58,7 +58,7 @@
 				<div class="sc flex space-x-4 content-start overflow-x-scroll">
 					{#each releases as game}
 						<Card on:click={() => {
-										$details = { transition: true, id: game.id, name: game.name, image: game.background_image };
+										$details = { unique: 0, transition: true, id: game.id, name: game.name, image: game.background_image };
 										page.go('/details');
 									}}
 									id={game.id} title={game.name} image={game.background_image}/>

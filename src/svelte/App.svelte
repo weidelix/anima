@@ -17,6 +17,7 @@
 	import Router, { activeRoute } from './pager/Router.svelte';
 	import Route from './pager/Route.svelte';
 	import page from './pager/page';
+	import Button from './components/Button.svelte';
 	
 	let inputElement: HTMLInputElement;
 
@@ -50,25 +51,24 @@
 	<!-- Bar -->
 	<div class="absolute left-0 top-0 flex justify-between px-5 py-2 w-full
 							bg-main-color"
-			 style="background-color: rgba(33, 33, 33, {$scrollY * 0.003})">
+			 style="background-color: rgba(33, 33, 33, {$scrollY * 0.003});
+			 				z-index: 9999;">
 		<div class="flex content-center font-main text-2xl text-white text-left">
 			<span class="text-white">anima</span>
 		</div>
-		<div class="flex flex-wrap justify-end content-center space-x-3 font-main">
-			<div class="flex flex-wrap justify-end content-center text-xl text-white"
-					 on:click={() => page.go('/')}>
-				<button class="text-xs  hover:text-green-400 
-										transition duration-400">
-						Home
-				</button>
-			</div>
-			<div class="flex flex-wrap justify-end content-center mr-5 text-xl text-white"
-					 on:click={() => page.go('/library') }>
-				<button class="text-xs {$activeRoute.path === '/library' ? 'text-green-400' : ''} hover:text-green-400 
-										transition duration-400">
-						Library
-				</button>
-			</div>
+		<div class="flex flex-wrap justify-end content-center space-x-1 font-main">
+			<Button class="text-xs hover:bg-white"
+							on:click={() => page.go('/')}
+							color={'white'} 
+							bgColor={$activeRoute.path === '/' ? 'white' : 'transparent'}>
+					Home
+			</Button>
+			<Button class="text-xs hover:bg-white"
+							on:click={() => page.go('/library') }
+							color={'white'}
+							bgColor={$activeRoute.path === '/library' ? 'white' : 'transparent'}>
+					Library
+			</Button>
 			<div class="flex h-full font-main">
 				<input bind:this={inputElement}
 							class="align-middle p-3 text-xs placeholder-white text-white bg-transparent 

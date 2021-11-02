@@ -21,8 +21,9 @@
 	}
 </script>
 
-<div bind:this={panel} class="absolute" transition:fly={{ duration: 150, y: -30 }}>
-	<div class="w-66 text-left text-white bg-sub-color rounded-xl shadow-xl">
+<div bind:this={panel} class="absolute" style="z-index: 9999;">
+	<div class="w-66 text-left text-white bg-sub-color rounded-xl shadow-xl"
+				transition:fly={{ duration: 150, y: -30 }}>
 		<slot/>
 	</div>
 </div>

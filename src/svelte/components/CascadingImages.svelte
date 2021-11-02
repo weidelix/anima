@@ -7,6 +7,7 @@
 	import { fly } from 'svelte/transition';
 	import { scrollY } from '../App.svelte';
 	import CascadingImage from './CascadingImage.svelte';
+	import Button from '../components/Button.svelte';
 	import Compress from '../Compress';
 	import { details } from '../Page/Details.svelte';
 	import page from '../pager/page';
@@ -20,7 +21,6 @@
 	let bigSubText = 'Subtext';
 	let bigImage = '';
 	let platforms: any[] = [];
-	let rating;
 	let i = 0;
 	let timeout: NodeJS.Timeout;
 	let id = -1;
@@ -52,7 +52,6 @@
 			bigSubText = banners[i].developers[0].name;
 			bigImage = banners[i].background_image;
 			platforms = banners[i].parent_platforms;
-			rating = banners[i].rating;
 		} 
 		else {
 			change(0);
@@ -98,9 +97,10 @@
 							<div class="text-6xl font-bold">
 								{bigText}
 							</div>
-								<button class="w-28 mt-6 px-4 py-2 transition bg-gray-500 bg-opacity-30 hover:bg-opacity-50 rounded"
+								<Button color="white" 
 									on:click={() => {
 											$details = {
+												unique: 0, 
 												transition: false,
 												id: id,
 												name: bigText,
@@ -110,7 +110,7 @@
 											page.go('/details');
 										}}>
 									Check out
-								</button>
+									</Button>
 							</div>
 						</div>
 						<div class="sc flex justify-start lg:justify-center space-x-4 self-end w-full overflow-x-auto p-5">

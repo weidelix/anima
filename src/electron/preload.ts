@@ -1,4 +1,5 @@
 import { contextBridge, ipcRenderer } from 'electron';
+import { on } from 'events';
 
 contextBridge.exposeInMainWorld('anima', {
 	search: async (name: string) => {
@@ -32,5 +33,5 @@ contextBridge.exposeInMainWorld('app', {
 
 	quit: () => {
 		ipcRenderer.send('quit');
-	}
+	},
 });

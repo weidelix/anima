@@ -7,7 +7,7 @@ interface User {
 	queue: any[]
 }
 
-export const profile = writable({library: [], queue: []});
+export const profile = writable<User>();
 
 async function init () {
 	profile.set(await window.app.readUserProfile());

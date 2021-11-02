@@ -73,7 +73,8 @@
 		<div class="absolute top-0 left-0 bg-main-color flex flex-col flex-wrap content-center 
 								justify-center text-white w-screen h-screen z-50 bg-center bg-no-repeat"
 				style="background-image: url('../anima_icon.png');
-								background-size: 8rem;"
+							 background-size: 8rem;
+							 z-index: 99999"
 				out:fade>
 			<h1 class="text-white text-4xl font-main mt-48">
 				<span class="text-white">anima</span>

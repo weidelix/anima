@@ -11,19 +11,23 @@
 	import { details } from '../Page/Details.svelte';
 	import page from '../pager/page';
 	import Button from './Button.svelte';
-
+	import { send, receive } from '../Page/Details.svelte';
 
 	let isFirstGame = false;
 	let container: HTMLDivElement;
 	let posY = 0.0;
 	let onPickup = false;
+	let isDragging = false;
 	
-	export let isDragging = false;
 	export let y = 0.0;
 	export let index: number;
 	export let title = '';
 	export let image = '';
 	export let id = -9999;
+	export let unique = 10;
+
+	const TITLE = 2;
+	const IMG = 3;
 
 	function pickup() {
 		onPickup = true;
@@ -86,12 +90,13 @@
 
 <div bind:this={container} 
 		 class="flex justify-between p-3 w-full h-24 text-white
-						{onPickup ? 'bg-yellow-400 transition duration-500' : ''}
-		 				{isDragging ? 'bg-yellow-400 transition-colors duration-500' 
-						 						: 'transition duration-500'}
+						{onPickup ? 'bg-yellow-400 transition' : ''}
+		 				{isDragging ? 'bg-yellow-400 transition-colors' 
+						 						: 'transition '}
 						{!onPickup && !isDragging ? 'bg-sub-color' : ''}
-					  rounded-xl"
-		 style="transform: translateY({posY}px) scale({isDragging || onPickup ? 1.02 : 1});"
+					  rounded-xl duration-200 ease-out"
+		 style="transform: translateY({posY}px) 
+		 									 scale({isDragging || onPickup ? 1.02 : 1});"
 		 on:mousedown={pickup}
 		 on:mousemove={() => {
 			 if (onPickup)
@@ -99,18 +104,29 @@
 		 }}>
 	<div class="flex items-center w-auto h-full space-x-3">
 		<div class="w-28 h-full bg-cover rounded-xl" 
-				 style="background-color: white; background-image: url({image})"></div>
+				 style="background-color: white; background-image: url({image})"
+				 in:receive={{key: IMG + id + unique}}
+				 out:send={{key: IMG + id + unique}}></div>
 		<div>
-			<div class="text-base font-bold">{title}</div>
+			<div class="text-base font-bold"
+					 in:receive={{key: TITLE + id + unique}}
+					 out:send={{key: TITLE + id + unique}}>{title}</div>
 			<div class="{!isFirstGame ? 'hidden' : ''}">
 				<span class="h-full text-xs align-middle">
-					Currently Playing 
+					Currently Playing
 				</span>
 				<span class="text-xl text-accent-green align-top">▸</span>
 			</div>
 		</div>
 	</div>
 	<div class="flex justify-center items-center h-full space-x-3 font-main">
+		<Button class="" color={'blue'}
+						on:click={() => { 
+							$details = {unique: unique, transition: true, id: id, name: title, image: image }
+							page.go('/details');
+						}}>
+			View
+		</Button>
 		<Button class="" on:click={() => { 
 							User.removeFromQueue({id: id}); 
 							isFirstGame = User.isFirstGame(id);
@@ -120,13 +136,6 @@
 						}}
 						color={'red'}>
 			Remove
-		</Button>
-		<Button class="" color={'blue'}
-						on:click={() => { 
-							$details = {transition: true, id: id, name: title, image: image }
-							page.go('/details');
-						}}>
-			View
 		</Button>
 	</div>
 </div>

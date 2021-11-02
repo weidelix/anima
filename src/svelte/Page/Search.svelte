@@ -48,7 +48,6 @@
 	let searchReady = false;
 
 	function setPosition() {
-		openSortBy = !openSortBy;
 		let rect = sortButton.getBoundingClientRect();
 		right = rect.right;
 		top = rect.top;
@@ -110,20 +109,21 @@
 			page.back();
 		}
 	}
-	
+
 	$: search($query);
 </script>
 
 <svelte:body on:keydown={closeSearchPage}/>
+<svelte:window on:resize={setPosition}/>
 
 <div bind:this={container} class="w-full h-full {searchReady ? 'px-5 mt-20' : ''}">
 	{#if bestResultGames.length + relatedGames.length !== 0 && $query !== '' && $activeRoute.path === '/search'}
-		<Loading ready={searchReady}>
+		<!-- <Loading ready={searchReady}> -->
 			{#if bestResultGames.length !== 0}
 				<div class="flex justify-between">
 					<div class="text-white text-left font-bold text-2xl">Best Results</div>
 					<button bind:this={sortButton} class="text-sm font-bold transition duration-400 text-white hover:text-green-400 hover:bg-green-200 hover:bg-opacity-20 rounded-xl p-2"
-									on:click={() => setPosition()}>
+									on:click={() => { setPosition(); openSortBy = !openSortBy; }}>
 						<span class="h-full">Sort by</span>
 						<i class="fas fa-sort text-sm"></i>
 					</button>
@@ -134,39 +134,54 @@
 									Sort by
 								</div>
 								<button class="font-bold transition duration-400 text-white hover:text-green-400 rounded-xl mx-4 my-3"
-										on:click={() => setPosition()}>
+										on:click={() => openSortBy = !openSortBy}>
 									<i class="fas fa-times text-xl"></i>
 								</button>
 							</div>
-	
+
 							<div class="flex flex-col space-y-2 p-3">
 								<button class="text-left w-full transition duration-400 text-gray-200 hover:text-green-400 hover:bg-green-200 hover:bg-opacity-20 rounded-xl p-3
-															 {sortedBy === 'relevance' ? 'text-green-400 bg-green-200 bg-opacity-20' : ''}"
-												on:click={() => { bestResultGames = [...relevanceList]; sortedBy = 'relevance';}}>
+																{sortedBy === 'relevance' ? 'text-green-400 bg-green-200 bg-opacity-20' : ''}"
+												on:click={() => { 
+																					bestResultGames = [...relevanceList]; 
+																					sortedBy = 'relevance';
+																				}}>
 									<i class="fas fa-poll text-xl"></i>
 									<span class="mx-3 font-bold">Relevance</span>
 								</button>
 								<button class="text-left w-full transition duration-400 text-gray-200 hover:text-green-400 hover:bg-green-200 hover:bg-opacity-20 rounded-xl p-3
-															 {sortedBy === 'a-z' ? 'text-green-400 bg-green-200 bg-opacity-20' : ''}"
-												on:click={() => { quick.sort(bestResultGames, quick.byNameAtoZ); sortedBy = 'a-z'; bestResultGames = bestResultGames;}}>
+																{sortedBy === 'a-z' ? 'text-green-400 bg-green-200 bg-opacity-20' : ''}"
+												on:click={() => { 
+																					bestResultGames = quick.sort(bestResultGames, quick.byNameAtoZ); 
+																					sortedBy = 'a-z'; 
+																				}}>
 									<i class="fas fa-sort-alpha-down text-xl"></i>
 									<span class="mx-3 font-bold">A - Z</span>
 								</button>
 								<button class="text-left w-full transition duration-400 text-gray-200 hover:text-green-400 hover:bg-green-200 hover:bg-opacity-20 rounded-xl p-3
-															 {sortedBy === 'z-a' ? 'text-green-400 bg-green-200 bg-opacity-20' : ''}"
-												on:click={() => { quick.sort(bestResultGames, quick.byNameZtoA); sortedBy = 'z-a'; bestResultGames = bestResultGames;}}>
+																{sortedBy === 'z-a' ? 'text-green-400 bg-green-200 bg-opacity-20' : ''}"
+												on:click={() => { 
+																					bestResultGames = quick.sort(bestResultGames, quick.byNameZtoA); 
+																					sortedBy = 'z-a'; 
+																				}}>
 									<i class="fas fa-sort-alpha-up text-xl"></i>
 									<span class="mx-3 font-bold">Z - A</span>
 								</button>
 								<button class="text-left w-full transition duration-400 text-gray-200 hover:text-green-400 hover:bg-green-200 hover:bg-opacity-20 rounded-xl p-3
-															 {sortedBy === 'date-desc' ? 'text-green-400 bg-green-200 bg-opacity-20' : ''}"
-												on:click={() => { quick.sort(bestResultGames, quick.byReleaseDesc); sortedBy = 'date-desc'; bestResultGames = bestResultGames;}}>
+																{sortedBy === 'date-desc' ? 'text-green-400 bg-green-200 bg-opacity-20' : ''}"
+												on:click={() => { 
+																					bestResultGames = quick.sort(bestResultGames, quick.byReleaseDesc); 
+																					sortedBy = 'date-desc'; 
+																				}}>
 									<i class="fas fas fa-sort-numeric-down text-xl"></i>
 									<span class="mx-3 font-bold">Release Date Descending</span>
 								</button>
 								<button class="text-left w-full transition duration-400 text-gray-200 hover:text-green-400 hover:bg-green-200 hover:bg-opacity-20 rounded-xl p-3
-															 {sortedBy === 'date-asc' ? 'text-green-400 bg-green-200 bg-opacity-20' : ''}"
-												on:click={() => { quick.sort(bestResultGames, quick.byReleaseAsc); sortedBy = 'date-asc'; bestResultGames = bestResultGames;}}>
+																{sortedBy === 'date-asc' ? 'text-green-400 bg-green-200 bg-opacity-20' : ''}"
+												on:click={() => { 
+																					bestResultGames = quick.sort(bestResultGames, quick.byReleaseAsc); 
+																					sortedBy = 'date-asc';
+																				}}>
 									<i class="fas fa-sort-numeric-up text-xl"></i>
 									<span class="mx-3 font-bold">Release Date Ascending</span>
 								</button>
@@ -178,7 +193,7 @@
 					{#each bestResultGames as game, i (game.id)}
 						<Card on:click={() => { 
 										addToRecents(game);
-										$details = { transition: true, id: game.id, name: game.name, image: game.background_image };
+										$details = { unique: 0, transition: true, id: game.id, name: game.name, image: game.background_image };
 										page.go('/details');
 									}}
 								id={game.id} title={game.name} image={game.background_image}/>
@@ -194,7 +209,7 @@
 				{#each relatedGames as game, i (game.id)}
 					<Card on:click={() => { 
 									addToRecents(game);
-									$details = { transition: true, id: game.id, name: game.name, image: game.background_image };
+									$details = { unique: 0, transition: true, id: game.id, name: game.name, image: game.background_image };
 									page.go('/details');
 								}}
 								id={game.id} title={game.name} image={game.background_image}/>
@@ -204,7 +219,7 @@
 				{/each}
 			</div>
 		{/if}
-	</Loading>
+	<!-- </Loading> -->
 	{:else if $query === ''}
 		{#if $recentSearches.length === 0}
 			<div class="grid place-content-center w-full h-full">
@@ -232,7 +247,7 @@
 					<div in:fly={{duration: 400 + (100 * i), x: 100}}>
 						<Card on:click={() => { 
 										addToRecents(game);
-										$details = { transition: true, id: game.id, name: game.name, image: game.background_image };
+										$details = { unique: 0, transition: true, id: game.id, name: game.name, image: game.background_image };
 										page.go('/details');
 									}} 
 									id={game.id} title={game.name} image={game.background_image}/>
