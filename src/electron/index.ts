@@ -20,6 +20,7 @@ const createWindow = () => {
     minHeight: 736,
     darkTheme: true,
     icon: path.join(__dirname, 'res/anima_icon.png'),
+    frame: false,
     webPreferences: {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
     }
@@ -183,7 +184,20 @@ app.whenReady().then(() => {
     }
   });
 
+  const win = BrowserWindow.getAllWindows()[0];
+
   ipcMain.on('quit', (event, args) => {
     app.quit();
+  });
+
+  ipcMain.on('minimize', (event, args) => {
+    win.minimize();
+  });
+
+  ipcMain.on('maximize', (event, args) => {
+    if (!win.isMaximized())
+      win.maximize();
+    else
+      win.unmaximize();
   });
 });

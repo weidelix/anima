@@ -13,6 +13,15 @@ body {
 	user-select: none;
 }
 
+button {
+	outline: none;
+	-webkit-app-region: no-drag;
+}
+
+.draggable {
+	-webkit-app-region: drag;
+}
+
 .tooltip {
 	visibility: hidden;
 	transition: all;

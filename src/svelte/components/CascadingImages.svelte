@@ -52,8 +52,8 @@
 	}
 </script>
 
-<div class="relative w-full h-screen mb-8 overscroll-auto" 
-		 style="height: 100vh;">
+<div class="relative w-full overscroll-auto" 
+		 style="height: 90vh;">
 	{#each banners as banner, index}
 		{#if index === i}
 			<div class="absolute left-0 top-0 w-full h-full bg-top bg-cover bg-no-repeat" 

@@ -30,6 +30,14 @@ contextBridge.exposeInMainWorld('app', {
 		ipcRenderer.send('init');
 	},
 
+	minimize: () => {
+		ipcRenderer.send('minimize');
+	},
+	
+	maximize: () => {
+		ipcRenderer.send('maximize');
+	},
+
 	quit: () => {
 		ipcRenderer.send('quit');
 	},

@@ -16,5 +16,7 @@ interface WindowAPI extends Window {
 		writeUserProfile(data: string): void,
 		init(): void,
 		quit(): void,
+		minimize(): void,
+		maximize(): void
 	}
 }

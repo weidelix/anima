@@ -67,7 +67,7 @@
 {:else if !ready || checkingConnection}
 	{#if initalLoad}
 		<div class="absolute top-0 left-0 bg-main-color flex flex-col flex-wrap content-center 
-								justify-center text-white w-screen h-screen z-50 bg-center bg-no-repeat"
+								justify-center text-white w-full h-full z-50 bg-center bg-no-repeat"
 				style="background-image: url('../anima_icon.png');
 							 background-size: 8rem;
 							 z-index: 99999"
