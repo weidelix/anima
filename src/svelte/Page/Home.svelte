@@ -35,33 +35,47 @@
 <Loading ready={isReady}>
 	<CascadingImages on:ready={() => cimsReady = true} ready={isReady}/>
 	{#if cimsReady && $activeRoute.path === '/'}
-		<div class="flex flex-col space-y-4 px-5 mt-20">
+		<div class="flex flex-col space-y-4 p-5 mt-20">
 			<div>
-				<div class="text-white text-left text-2xl font-bold my-2">
+				<div class="text-white text-left text-2xl font-bold">
 					Popular <i class="fas fa-fire-alt text-orange"></i>
 				</div>
-				<div class="sc flex space-x-4 content-start overflow-x-scroll">
+				<div class="sc overflow-x-scroll flex py-3 space-x-4 content-start">
 					{#each popular as game}
 						<Card on:click={() => {
-										$details = { unique: 0, transition: true, id: game.id, name: game.name, image: game.background_image };
+										$details = { 
+																	unique: 0, 
+																	transition: true, 
+																	id: game.id, 
+																	name: game.name, 
+																	image: game.background_image 
+															 };
 										page.go('/details');
 									}}
-									id={game.id} title={game.name} image={game.background_image}/>
+									id={game.id} title={game.name} image={game.background_image}
+									rating={game.rating}/>
 					{/each}
 				</div>
 			</div>
 		
 			<div>
-				<div class="text-white text-left text-2xl font-bold my-2">
+				<div class="text-white text-left text-2xl font-bold">
 					Big Releases <i class="fas fa-meteor text-yellow-400"></i>
 				</div>
-				<div class="sc flex space-x-4 content-start overflow-x-scroll">
+				<div class="sc overflow-x-scroll flex py-3 space-x-4 content-start">
 					{#each releases as game}
 						<Card on:click={() => {
-										$details = { unique: 0, transition: true, id: game.id, name: game.name, image: game.background_image };
+										$details = { 
+																	unique: 0, 
+																	transition: true, 
+																	id: game.id, 
+																	name: game.name, 
+																	image: game.background_image 
+															 };
 										page.go('/details');
 									}}
-									id={game.id} title={game.name} image={game.background_image}/>
+									id={game.id} title={game.name} image={game.background_image}
+									rating={game.rating}/>
 					{/each}
 					{(() => { isReady = true; return ''; })()}
 				</div>

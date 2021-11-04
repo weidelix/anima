@@ -176,7 +176,8 @@ import { activeRoute } from '../pager/Router.svelte';
 														image: card.background_image };
 													page.go('/details');
 												}}
-												title={card.name} image={card.background_image} id={card.id}/>
+												title={card.name} image={card.background_image} id={card.id}
+												rating={card.rating}/>
 								</div>
 							{/each}
 						</div>

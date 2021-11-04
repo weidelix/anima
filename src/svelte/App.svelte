@@ -40,10 +40,6 @@
 	})
 </script>
 
-<svelte:head>
-	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fredoka+One">
-</svelte:head>
-
 <div class="sc flex flex-col w-screen h-screen 
 						overflow-y-auto bg-main-color"
 		on:scroll={(e) => $scrollY = e.currentTarget.scrollTop}>

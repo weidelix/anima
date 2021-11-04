@@ -3,6 +3,7 @@ import path from 'path';
 import fs from 'fs';
 
 import '../../res/anima_icon.png';
+import electronReload from 'electron-reload';
 
 declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
@@ -97,7 +98,9 @@ app.whenReady().then(() => {
               return {
                 id: el.id,
                 name: el.name,
-                background_image: el.background_image
+                background_image: el.background_image,
+                rating: el.rating,
+                platforms: el.platforms
               };
             });
 

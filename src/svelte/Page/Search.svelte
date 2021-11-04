@@ -196,7 +196,8 @@
 										$details = { unique: 0, transition: true, id: game.id, name: game.name, image: game.background_image };
 										page.go('/details');
 									}}
-								id={game.id} title={game.name} image={game.background_image}/>
+								id={game.id} title={game.name} image={game.background_image}
+								rating={game.rating}/>
 						{#if relatedGames.length === 0 && i === bestResultGames.length - 1}
 							{(() => { searchReady = true; return ''; })()}
 						{/if}
@@ -212,7 +213,8 @@
 									$details = { unique: 0, transition: true, id: game.id, name: game.name, image: game.background_image };
 									page.go('/details');
 								}}
-								id={game.id} title={game.name} image={game.background_image}/>
+								id={game.id} title={game.name} image={game.background_image}
+								rating={game.rating}/>
 					{#if i === relatedGames.length - 1}
 						{(() => { searchReady = true; return ''; })()}
 					{/if}
@@ -229,7 +231,7 @@
 				</div>
 			</div>
 		{:else}
-			<div class="flex justify-between">
+			<div class="flex justify-between px-5 mt-20">
 				<div>
 					<div class="text-white text-left font-bold text-2xl my-4">
 						Recents
@@ -242,7 +244,7 @@
 					<i class="far fa-trash-alt"></i>
 				</div>
 			</div>
-			<div class="sc flex flex-row space-x-2 content-start overflow-x-scroll">
+			<div class="sc flex flex-row px-5 space-x-2 content-start overflow-x-scroll">
 				{#each $recentSearches as game, i (game.id)}
 					<div in:fly={{duration: 400 + (100 * i), x: 100}}>
 						<Card on:click={() => { 
@@ -250,7 +252,8 @@
 										$details = { unique: 0, transition: true, id: game.id, name: game.name, image: game.background_image };
 										page.go('/details');
 									}} 
-									id={game.id} title={game.name} image={game.background_image}/>
+									id={game.id} title={game.name} image={game.background_image}
+									rating={game.rating}/>
 					</div>
 				{/each}
 			</div>

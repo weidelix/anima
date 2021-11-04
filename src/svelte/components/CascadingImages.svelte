@@ -4,10 +4,11 @@
 
 <script lang="ts">
 	import { onMount, createEventDispatcher } from 'svelte';
-	import { fly } from 'svelte/transition';
+	import { fade, fly } from 'svelte/transition';
 	import { scrollY } from '../App.svelte';
 	import CascadingImage from './CascadingImage.svelte';
 	import Button from '../components/Button.svelte';
+	import Tag from '../components/Tag.svelte';
 	import Compress from '../Compress';
 	import { details } from '../Page/Details.svelte';
 	import page from '../pager/page';
@@ -17,13 +18,8 @@
 	const dispatch = createEventDispatcher();
 
 	let banners: any[] = [];  
-	let bigText = 'Title';
-	let bigSubText = 'Subtext';
-	let bigImage = '';
-	let platforms: any[] = [];
 	let i = 0;
 	let timeout: NodeJS.Timeout;
-	let id = -1;
 	
 	onMount(async () => {
 		let date = new Date();
@@ -34,7 +30,7 @@
 
 		for (let j = 0; j < temp.length; j++) {
 			banners.push(await window.anima.getDetails(temp[j].id));
-			banners[j].background_image = await Compress.compress(temp[j].background_image, 1920, 1080);
+			banners[j].background_image = await Compress.compress(temp[j].background_image, 1920, 1080, 0.8);
 		}
 			
 		dispatch('ready');
@@ -46,84 +42,99 @@
 
 		i = value;
 
-		if (i !== banners.length) {
-			id = banners[i].id;
-			bigText = banners[i].name;
-			bigSubText = banners[i].developers[0].name;
-			bigImage = banners[i].background_image;
-			platforms = banners[i].parent_platforms;
-		} 
-		else {
+		if (i === banners.length) {
 			change(0);
 		}
 
 		timeout = setTimeout(() => {
 			change(++i);
-		}, 5000);
+		}, 7000);
 	}
 </script>
 
-<div class="w-full h-screen mb-8 overscroll-auto" style="height: 100vh;">
-	<div class="w-full h-full bg-top bg-cover bg-no-repeat" 
-		   style="background-image: url('{bigImage}');
-			 				background-position: 50% {($scrollY) * 0.4}px;">
-		<div class="bg-gradient-to-t from-main-color via-transparent w-full h-full">
-			<div class="bg-gradient-to-r from-main-color via-transparent w-full h-full">
-				<div class="flex flex-col space-between text-white h-full">
-					{#if ready}
-						<div class="flex-grow p-20">
-						<div class="flex flex-col flex-wrap justify-center h-full" in:fly={{delay: 300, x: -100}}>
-							<div class="flex flex-row space-x-1 text-base">
-								{bigSubText}&nbsp • &nbsp;  
-									<div class:hidden={!(platforms.some(el => el.platform.slug === "xbox"))}>
-										<i class="fab fa-xbox text-xbox text-xl"></i>
-									</div>
-									<div class:hidden={!(platforms.some(el => el.platform.slug === "playstation"))}>
-										<i class="fab fa-playstation text-blue-500 text-xl"></i>
-									</div>
-									<div class:hidden={!(platforms.some(el => el.platform.slug === "pc"))}>
-										<i class="fab fa-windows text-blue-400 text-xl"></i>
-									</div>
-									<div class:hidden={!(platforms.some(el => el.platform.slug === "mac"))}>
-										<i class="fab fa-apple text-gray-200 text-xl"></i>
-									</div>
-									<div class:hidden={!(platforms.some(el => el.platform.slug === "linux"))}>
-										<i class="fab fa-linux text-white text-xl"></i>
-									</div>
-									<div class:hidden={!(platforms.some(el => el.platform.slug === "android"))}>
-										<i class="fab fa-android text-green-500 text-xl"></i>
-									</div>
-							</div>
-							<div class="text-6xl font-bold">
-								{bigText}
-							</div>
-								<Button color="white" 
-									on:click={() => {
-											$details = {
-												unique: 0, 
-												transition: false,
-												id: id,
-												name: bigText,
-												image: bigImage
-											};
-
-											page.go('/details');
-										}}>
-									Check out
-									</Button>
-							</div>
-						</div>
-						<div class="sc flex justify-start lg:justify-center space-x-4 self-end w-full overflow-x-auto p-5">
-							{#each banners as game, index (game.id)}
-								<div in:fly={{delay: (50 * index), x: -100}}>
-										<CascadingImage border="rounded-2xl {i === index ? 'ring-4 ring-accent-green': ''}" 
-										on:click={() => change(index)} name={game.name} image={game.background_image}/>
-								</div>
-							{/each}
-						</div>
-					{/if}
+<div class="relative w-full h-screen mb-8 overscroll-auto" 
+		 style="height: 100vh;">
+	{#each banners as banner, index}
+		{#if index === i}
+			<div class="absolute left-0 top-0 w-full h-full bg-top bg-cover bg-no-repeat" 
+					 style="background-image: url('{banner.background_image}');
+									background-position: 50% {($scrollY) * 0.4}px;"
+					transition:fade>
+				<div class="bg-gradient-to-t from-main-color via-transparent w-full h-full">
+					<div class="bg-gradient-to-r from-main-color via-transparent w-full h-full">
+					</div>
 				</div>
 			</div>
-		</div>
+			<div class="absolute left-0 top-0 flex flex-col justify-center w-full h-full
+									text-white ">
+				{#if ready}
+					<div class="flex-grow px-14">
+						<div class="flex flex-col flex-wrap justify-center h-full">
+							<div class="flex space-x-1 text-xs" 
+								 	 in:fly={{ y: -20, delay: 0 }} out:fly={{ y: 20, delay: 0}}>
+								<span class="inline-block align-middle text-base">
+									{banner.developers[0].name}&nbsp • &nbsp;  
+								</span>
+								<Tag class="{!(banner.parent_platforms.some(el => el.platform.slug.includes("xbox"))) ? 'hidden' : ''}
+									bg-xbox">
+								<i class="fab fa-xbox"></i>
+								</Tag>
+								<Tag class="{!(banner.parent_platforms.some(el => el.platform.slug.includes("playstation"))) ? 'hidden' : ''}
+													bg-blue-500">
+									<i class="fab fa-playstation "></i>
+								</Tag>
+								<Tag class="{!(banner.parent_platforms.some(el => el.platform.slug === 'pc')) ? 'hidden' : ''}
+													bg-blue-400">
+									<i class="fab fa-windows"></i>
+								</Tag>
+								<Tag class="{!(banner.parent_platforms.some(el => (el.platform.slug === "macos") || 
+																										(el.platform.slug === "ios")   ||
+																										(el.platform.slug === "mac"))) ? 'hidden' : ''}
+														bg-gray-400">
+									<i class="fab fa-apple"></i>
+								</Tag>
+								<Tag class="{!(banner.parent_platforms.some(el => el.platform.slug === "linux")) ? 'hidden' : ''}
+														bg-yellow-400">
+									<i class="fab fa-linux"></i>
+								</Tag>
+								<Tag class="{!(banner.parent_platforms.some(el => el.platform.slug.includes("android"))) ? 'hidden' : ''}
+														bg-green-500">
+									<i class="fab fa-android"></i>
+								</Tag>
+							</div>
+							<div class="mt-3 mb-6 text-5xl font-bold"
+									in:fly={{ y: -20, delay: 100 }} out:fly={{ y: 20, delay: 100}}>
+								{banner.name}
+							</div>
+							<Button class="px-3 py-2 w-28 text-base rounded" color="white" 
+											on:click={() => {
+												$details = {
+													unique: 0, 
+													transition: true,
+													id: banner.id,
+													name: banner.name,
+													image: banner.background_image
+												};
+				
+												page.go('/details');
+											}}>
+									Check out
+							</Button>
+						</div>
+					</div>
+				{/if}
+			</div>
+		{/if}
+	{/each}
+	<div class="sc absolute bottom-0 right-0 flex flex-wrap justify-start lg:justify-center 
+							space-x-4 self-end w-full overflow-x-auto p-5">
+		{#if ready}
+			{#each banners as game, index (game.id)}
+				<div in:fly={{delay: (50 * index), x: -100}}>
+						<CascadingImage border="rounded-2xl {i === index ? 'ring-4 ring-accent-green': ''}" 
+						on:click={() => change(index)} name={game.name} image={game.background_image}/>
+				</div>
+			{/each}
+		{/if}
 	</div>
 </div>

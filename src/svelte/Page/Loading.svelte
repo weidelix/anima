@@ -60,12 +60,8 @@
 			<span class="text-white">No internet connection</span>
 		</h1>
 		<div class="flex justify-center mt-10 space-x-4 font-bold">
-			<div class="w-20">
-				<Button class="w-full" on:click={() => checkConnection(3000)} color={'green'}>Retry</Button>
-			</div>
-			<div class="w-20">
-				<Button class="w-full" on:click={() => window.app.quit()} color={'red'}>Exit</Button>
-			</div>
+			<Button class="w-20 font-main" on:click={() => checkConnection(3000)} color={'green'}>Retry</Button>
+			<Button class="w-20 font-main" on:click={() => window.app.quit()} color={'red'}>Exit</Button>
 		</div>
 	</div>
 {:else if !ready || checkingConnection}

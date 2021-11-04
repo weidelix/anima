@@ -12,7 +12,8 @@
 	let hover = false;
 </script>
 
-<div class="bg-white rounded-xl {border} shadow-xl transition hover:transform-gpu hover:scale-{down} bg-cover overflow-hidden" 
+<div class="overflow-hidden bg-white rounded-xl {border} shadow-2xl transition 
+						hover:transform-gpu hover:scale-{down} bg-cover" 
 		on:click={() => dispatch('click')}
 		on:mousedown={() => {down = 100}} on:mouseup={() => {down = 110}} 
 		on:mouseleave={() => {down = 100; hover = false;}} on:mouseenter={() => {down = 110; hover = true;}}

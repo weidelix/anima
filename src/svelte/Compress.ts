@@ -1,6 +1,6 @@
 import Compressor from 'compressorjs';
 
-export async function compressFiles(files: string[], width = 500, height = 400) {			
+export async function compressFiles(files: string[], width = 500, height = 400, quality = 0.6) {			
 	let promise = new Promise<string[]>(async (resolve, reject) => {
 		let images: string[] = [];
 		let imageBlob: Blob[] = [];
@@ -11,7 +11,7 @@ export async function compressFiles(files: string[], width = 500, height = 400) 
 
 		for (let i = 0; i < files.length; i++) {
 			new Compressor(imageBlob[i], {
-				quality: 0.6,
+				quality: quality,
 				width: width,
 				height: height,
 	
@@ -33,10 +33,10 @@ export async function compressFiles(files: string[], width = 500, height = 400) 
 	return promise;
 }
 
-export async function compress(file: string, width = 500, height = 400) {
+export async function compress(file: string, width = 500, height = 400, quality = 0.6) {
 	let promise = new Promise<string>(async (resolve, reject) => {
 		new Compressor(await fetch(file).then(res => res.blob()), {
-			quality: 0.6,
+			quality: quality,
 			width: width,
 			height: height,
 

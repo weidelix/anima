@@ -35,6 +35,7 @@
 	import { fade } from 'svelte/transition';
 	import User from '../User';
 	import page from '../pager/page';
+	import Tag from '../components/Tag.svelte';
 
 	const dispatch = createEventDispatcher();
 	const TITLE = 2;
@@ -147,9 +148,9 @@
 					</div>
 					<div class="text-xs text-center my-1 {inLibrary ? 'text-red-400' : ''}">
 						{#if inLibrary}
-							Remove from favorites
+							In Favorites
 						{:else}
-							Add to favorites
+							Add to Favorites
 						{/if}
 					</div>
 				</div>
@@ -167,9 +168,9 @@
 					<i class="fas fa-layer-group text-2xl self-center"></i>
 					<div class="text-xs text-center my-1">
 						{#if inQueue}
-							Queued
+							In Queue
 						{:else}
-							Queue game
+							Add to Queue
 						{/if}
 					</div>
 				</div>
@@ -197,28 +198,34 @@
 					<div class="my-2 text-sm font-bold text-left text-sub-heading">
 						Available on
 					</div>
-					<div class="flex flex-wrap content-center space-x-2 mx-4">
+					<div class="flex flex-wrap content-center space-x-2 mx-4" style="font-size: 0.7rem;">
 						{#if gameData.parent_platforms}
-							{#each platforms as platforms}
-								{#if platforms.platform.slug === "xbox"}
-										<i class="fab fa-xbox text-xbox text-xl"></i>
-								{/if}
-								{#if platforms.platform.slug === "playstation"}
-									<i class="fab fa-playstation text-blue-500 text-xl"></i>
-								{/if}
-								{#if platforms.platform.slug === "pc"}
-									<i class="fab fa-windows text-blue-400 text-xl"></i>
-								{/if}
-								{#if platforms.platform.slug === "mac"}
-									<i class="fab fa-apple text-gray-200 text-xl"></i>
-								{/if}
-								{#if platforms.platform.slug === "linux"}
-									<i class="fab fa-linux text-white text-xl"></i>
-								{/if}
-								{#if platforms.platform.slug === "android"}
-									<i class="fab fa-android text-green-500 text-xl"></i>
-								{/if}
-							{/each}
+							<Tag class="{!(platforms.some(el => el.platform.slug.includes("xbox"))) ? 'hidden' : ''}
+												bg-xbox">
+							<i class="fab fa-xbox"></i>
+							</Tag>
+							<Tag class="{!(platforms.some(el => el.platform.slug.includes("playstation"))) ? 'hidden' : ''}
+												bg-blue-500">
+								<i class="fab fa-playstation "></i>
+							</Tag>
+							<Tag class="{!(platforms.some(el => el.platform.slug === 'pc')) ? 'hidden' : ''}
+												bg-blue-400">
+								<i class="fab fa-windows "></i>
+							</Tag>
+							<Tag class="{!(platforms.some(el => (el.platform.slug === "macos") || 
+																									(el.platform.slug === "ios")   ||
+																									(el.platform.slug === "mac"))) ? 'hidden' : ''}
+													bg-gray-400">
+								<i class="fab fa-apple"></i>
+							</Tag>
+							<Tag class="{!(platforms.some(el => el.platform.slug === "linux")) ? 'hidden' : ''}
+													bg-yellow-400">
+								<i class="fab fa-linux"></i>
+							</Tag>
+							<Tag class="{!(platforms.some(el => el.platform.slug.includes("android"))) ? 'hidden' : ''}
+													bg-green-500">
+								<i class="fab fa-android"></i>
+							</Tag>
 						{/if}
 					</div>
 				</div>

@@ -23,18 +23,16 @@ const config = {
 		}),
 		backgroundColor: theme => ({
 			...theme('colors'),
-			'main-color': '#212121',
-			'sub-color': '#282828',
-			'accent-green': '#34D399' 
+			'main-color': '#181818',
+			'sub-color': '#242424',
+			'accent-green': '#34D399' ,
+			'xbox': '#0e7a0d'
 		}),
 		gradientColorStops: theme => ({
 			...theme('colors'),
-			'main-color': '#212121',
-			'accent-green': '#34D399' 
+			'main-color': '#181818',
+			'accent-green': '#242424' 
 		}),
-		minWidth: {
-			'tooltip-min': '4.2rem'
-		},
 		extend: {
 			outline: {
 				'accent-green': ['4px solid #34D399']
