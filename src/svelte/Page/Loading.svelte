@@ -51,7 +51,8 @@
 </script>
 
 
-{#if !isOnline && !checkingConnection}
+<!-- {#if !isOnline && !checkingConnection} -->
+{#if true && true}
 	<div class="absolute top-0 left-0 flex flex-col flex-wrap justify-center content-center w-screen h-screen text-white bg-main-color">
 		<div class="flex justify-center">
 			<i class="fas fa-skull-crossbones text-4xl"></i>

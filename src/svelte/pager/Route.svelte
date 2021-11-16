@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { register, activeRoute, prevPath } from './Router.svelte';
-	import page from './page';
 
 	export let path = '*';
 	export let component = null;

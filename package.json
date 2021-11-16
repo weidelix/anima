@@ -19,7 +19,9 @@
 	"license": "MIT",
 	"config": {
 		"forge": {
-			"packagerConfig": {},
+			"packagerConfig": {
+				"icon": "./res/anima"
+			},
 			"makers": [
 				{
 					"name": "@electron-forge/maker-squirrel",
@@ -74,8 +76,7 @@
 		"node-sass": "^6.0.1",
 		"page": "^1.11.6",
 		"party-js": "^2.0.1",
-		"sirv-cli": "^1.0.0",
-		"stream-to-blob": "^2.0.1"
+		"sirv-cli": "^1.0.0"
 	},
 	"devDependencies": {
 		"@electron-forge/cli": "^6.0.0-beta.61",

@@ -2,6 +2,7 @@
 	import { cubicOut } from 'svelte/easing';
 	import { crossfade } from 'svelte/transition';
 	import { writable } from 'svelte/store';
+	import { scrollY } from '../App.svelte';
 	
 	export const details = writable({ 
 		unique: 0,
@@ -47,7 +48,6 @@
 	let lessDesc = '';
 	let moreDesc = '';
 	let showMore = false;
-	let favButton: HTMLDivElement;
 	let platforms: any[];
 	let inLibrary = false;
 	let inQueue = false;
@@ -91,7 +91,7 @@
 <div class="sc grid absolute overflow-auto
 					overscroll-contain left-0 text-white 
 					h-full w-full"
-		style="top: {window.scrollY}px;
+		style="top: {$scrollY}px;
 					 z-index: 99999"
 		on:scroll|stopPropagation
 		transition:fade={{duration: 200}}>
@@ -130,7 +130,7 @@
 				</div>
 			</div>
 			<div class="grid grid-cols-3 justify-around w-full my-3">
-				<div bind:this={favButton} class="flex flex-wrap flex-col justify-center transition duration-400 text-white hover:text-red-400 hover:bg-red-200 hover:bg-opacity-20 rounded-xl w-full h-full p-2"
+				<div class="flex flex-wrap flex-col justify-center transition duration-400 text-white hover:text-red-400 hover:bg-red-200 hover:bg-opacity-20 rounded-xl w-full h-full p-2"
 							on:click={() => {
 								if (!inLibrary && gameData !== {})
 									User.addToLibrary(gameData);
@@ -138,7 +138,6 @@
 									User.removeFromLibrary(gameData);
 
 								inLibrary = User.inLibrary($details.id);
-								dispatch('libraryUpdated');
 							}}>
 					<div class="{inLibrary ? '' : 'hidden'} flex justify-center w-full">
 						<i class="fas fa-heart self-center text-2xl text-red-400"></i>
@@ -163,7 +162,6 @@
 									User.removeFromQueue(gameData);
 
 								inQueue = User.inQueue($details.id);
-								dispatch('queueUpdated')
 							}}>
 					<i class="fas fa-layer-group text-2xl self-center"></i>
 					<div class="text-xs text-center my-1">
@@ -178,7 +176,7 @@
 							on:click={() => window.anima.openWebsite(gameData.website)}>
 					<i class="fas fa-globe-americas text-2xl self-center"></i>
 					<div class="text-xs text-center my-1">
-						Visit website
+						Visit Website
 					</div>
 				</div>
 			</div>

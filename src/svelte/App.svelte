@@ -11,13 +11,14 @@
 	import { onMount } from 'svelte';
 	import Details from './Page/Details.svelte';
 	import Home from './Page/Home.svelte';
-	import MyLibrary from './Page/MyLibrary.svelte';
+	import MyLibrary from './Page/Library.svelte';
 	import Search  from './Page/Search.svelte';
 	import User from './User';
 	import Router, { activeRoute } from './pager/Router.svelte';
 	import Route from './pager/Route.svelte';
 	import page from './pager/page';
 	import Button from './components/Button.svelte';
+import Card from './components/Card.svelte';
 	
 	let inputElement: HTMLInputElement;
 
@@ -75,7 +76,7 @@
 	<!-- Bar -->
 	<div class="fixed flex justify-between px-5 py-2 w-full
 							bg-main-color"
-			style="--tw-bg-opacity: {$scrollY * 0.003};
+			style="--tw-bg-opacity: {$activeRoute.path === '/' ? $scrollY * 0.003 : 1};
 						 z-index: 9999;">
 		<div class="flex content-center font-main text-xl text-white text-left">
 			<span class="text-white">
@@ -110,7 +111,7 @@
 				<button class:hidden={$activeRoute.path === '/search'} on:click={enableSearch}>
 					<i class="fas fa-search m-3 align-middle text-white hover:text-green-400 transition duration-400"></i>
 				</button>
-				<button class:hidden={$activeRoute.path !== '/search'} on:click={() => $query = ''}>
+				<button class:hidden={$activeRoute.path !== '/search'} on:click={() => {$query = ''; inputElement.value = ''; }}>
 					<i class="fas fa-times m-3 align-middle text-white hover:text-green-400 transition duration-400"></i>
 				</button>
 			</div>

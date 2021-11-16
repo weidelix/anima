@@ -18,6 +18,7 @@
 	import Compress from '../Compress';
 	import page from '../pager/page';
 	import { activeRoute } from "../pager/Router.svelte";
+import { onDestroy } from "svelte";
 
 	const emptySearchMessages = [
 		'Try checking your speeling',
@@ -50,13 +51,24 @@
 	function setPosition() {
 		let rect = sortButton.getBoundingClientRect();
 		right = rect.right;
-		top = rect.top;
+		top = rect.top - 36;
 	};
 
 	async function search(name: string) {
-		searchReady = false;
 		
+		searchReady = false;
+
 		if ($query !== '') {
+			
+			// Delete previous blobs before searching 
+			for (let j = 0; j < bestResultGames.length; j++) {
+				URL.revokeObjectURL(bestResultGames[j].background_image);
+				URL.revokeObjectURL(relevanceList[j].background_image);
+			}
+			
+			for (let j = 0; j < relatedGames.length; j++) {
+				URL.revokeObjectURL(relatedGames[j].background_image);
+			}
 
 			let searchedGames = await window.anima.search({name: $query});
 			
@@ -109,6 +121,21 @@
 			page.back();
 		}
 	}
+
+	onDestroy(() => {
+		for (let j = 0; j < bestResultGames.length; j++) {
+			URL.revokeObjectURL(bestResultGames[j].background_image);
+			URL.revokeObjectURL(relevanceList[j].background_image);
+		}
+		
+		for (let j = 0; j < relatedGames.length; j++) {
+			URL.revokeObjectURL(relatedGames[j].background_image);
+		}
+
+		bestResultGames = [];
+		relevanceList = [];
+		relatedGames = [];
+	});
 
 	$: search($query);
 </script>

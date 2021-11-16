@@ -17,7 +17,7 @@
 	import quick from '../Quicksort';
 	import page from '../pager/page';
 	import { details } from './Details.svelte';
-import { activeRoute } from '../pager/Router.svelte';
+	import { activeRoute } from '../pager/Router.svelte';
 
 	let sortButton: HTMLButtonElement;
 	let top = 10;
@@ -35,7 +35,7 @@ import { activeRoute } from '../pager/Router.svelte';
 	function setPosition() {
 		let rect = sortButton.getBoundingClientRect();
 		right = rect.right;
-		top = rect.top;
+		top = rect.top - 36;
 	};
 
 	onMount(async () => {
@@ -88,7 +88,7 @@ import { activeRoute } from '../pager/Router.svelte';
 								{
 									User.removeFromQueue({id: $profile.queue[0].id});
 									$playing = $profile.queue[0].name;
-							}}>
+								}}>
 				Finish playing - "{$playing}"
 			</Button>
 		{/if}

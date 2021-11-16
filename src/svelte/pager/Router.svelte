@@ -18,6 +18,7 @@
 	import page from './page';
 	
 	const last = (route) => {
+		
 		return function () {
 			$activeRoute = { ...route };
 			$prevPath = page.prev();

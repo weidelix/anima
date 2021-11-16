@@ -3,7 +3,6 @@ import path from 'path';
 import fs from 'fs';
 
 import '../../res/anima_icon.png';
-import electronReload from 'electron-reload';
 
 declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
@@ -101,7 +100,6 @@ app.whenReady().then(() => {
                 name: el.name,
                 background_image: el.background_image,
                 rating: el.rating,
-                platforms: el.platforms
               };
             });
 
@@ -132,7 +130,23 @@ app.whenReady().then(() => {
         });
         
         response.on('end', () => {
-          resolve(JSON.parse(Buffer.concat(chunks).toString()));
+          let data = JSON.parse(Buffer.concat(chunks).toString());
+
+          try {
+            resolve({
+                id: data.id,
+                name: data.name,
+                background_image: data.background_image,
+                background_image_additional: data.background_image_additional,
+                rating: data.rating,
+                parent_platforms: data.parent_platforms,
+                description: data.description,
+                developers: data.developers
+            });
+          }
+          catch (error) {
+            resolve({});  
+          }
         });
       });
       

@@ -1,5 +1,8 @@
 <script lang="ts" context="module">
 	declare let window : WindowAPI;
+
+	let popular: any[] = [];
+	let releases: any[] = [];
 </script>
 
 <script lang="ts">
@@ -14,28 +17,43 @@
 
 	let isReady = false;
 	let cimsReady = false;
-	let popular: any[] = [];
-	let releases: any[] = [];
 
 	onMount(async () => {
-		popular = await window.anima.search({name: ''});
-		releases = await window.anima.search({name: '', date: '2021-01-01,2021-12-31'});
+		if (popular.length === 0 && releases.length === 0) {
+			popular = await window.anima.search({name: ''});
+			releases = await window.anima.search({name: '', date: '2021-01-01,2021-12-31'});
+	
+			for (let j = 0; j < popular.length; j++) {
+				popular[j].background_image = await Compress.compress(popular[j].background_image, 400, 500);
+			}
+			
+			for (let j = 0; j < releases.length; j++) {
+				releases[j].background_image = await Compress.compress(releases[j].background_image, 400, 500);
+			}
+		}
+	});
 
+	$: if($activeRoute.path === '/search') {
 		for (let j = 0; j < popular.length; j++) {
-			popular[j].background_image = await Compress.compress(popular[j].background_image, 400, 500);
+			URL.revokeObjectURL(popular[j].background_image);
 		}
 		
 		for (let j = 0; j < releases.length; j++) {
-			releases[j].background_image = await Compress.compress(releases[j].background_image, 400, 500);
+			URL.revokeObjectURL(releases[j].background_image);
 		}
-	});
+
+		popular = [];
+		releases = [];
+
+		cimsReady = false;
+	}
 
 </script>
 
 <Loading ready={isReady}>
 	<CascadingImages on:ready={() => cimsReady = true} ready={isReady}/>
 	{#if cimsReady && $activeRoute.path === '/'}
-		<div class="flex flex-col space-y-4 p-5 mt-20">
+		<div class="flex flex-col space-y-4 p-5 mt-10">
 			<div>
 				<div class="text-white text-left text-2xl font-bold">
 					Popular <i class="fas fa-fire-alt text-orange"></i>
@@ -76,7 +94,7 @@
 									}}
 									id={game.id} title={game.name} image={game.background_image}
 									rating={game.rating}/>
-					{/each}
+						{/each}
 					{(() => { isReady = true; return ''; })()}
 				</div>
 			</div>
