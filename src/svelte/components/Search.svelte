@@ -32,8 +32,7 @@
 	];
 
 	let emptySearchIndex;
-	let bestResultGames : any[] = [];
-	let relevanceList : any[] = [];
+	let searchedGames : any[] = [];
 
 	async function search(name: string) {
 		if ($query !== '') {
@@ -41,20 +40,16 @@
 			addToRecents(name);
 
 			// Delete previous blobs before searching 
-			for (let j = 0; j < bestResultGames.length; j++) {
-				URL.revokeObjectURL(bestResultGames[j].background_image);
-				URL.revokeObjectURL(relevanceList[j].background_image);
+			for (let j = 0; j < searchedGames.length; j++) {
+				URL.revokeObjectURL(searchedGames[j].background_image);
 			}
 
-			let searchedGames = await window.anima.search({name: $query});
+			searchedGames = await window.anima.search({name: $query});
+			searchedGames = searchedGames.filter(game => game.name.toLowerCase().includes($query.toLowerCase()));
 			
-			bestResultGames   = searchedGames.filter(game => game.name.toLowerCase().includes($query.toLowerCase()));
-			
-			for (let j = 0; j < bestResultGames.length; j++) {
-				bestResultGames[j].background_image = await Compress.compress(bestResultGames[j].background_image, 400, 500);
+			for (let game of searchedGames) {
+				game.background_image = await Compress.compress(game.background_image, 400, 500);
 			}
-	
-			relevanceList = [...bestResultGames];
 		}
 	}
 
@@ -68,8 +63,6 @@
 				$recentSearches.push(game);
 			}
 		}
-
-		console.log($recentSearches.length);
 	}
 
 	function clearRecents() {
@@ -90,23 +83,21 @@
 	}
 
 	onDestroy(() => {
-		for (let j = 0; j < bestResultGames.length; j++) {
-			URL.revokeObjectURL(bestResultGames[j].background_image);
-			URL.revokeObjectURL(relevanceList[j].background_image);
+		for (let j = 0; j < searchedGames.length; j++) {
+			URL.revokeObjectURL(searchedGames[j].background_image);
 		}
 
-		bestResultGames = [];
-		relevanceList = [];
+		searchedGames = [];
 	});
 
 	$: search($query);
 </script>
 
 <div class="w-80 h-full bg-main-color rounded-b-xl">
-	{#if bestResultGames.length !== 0 && $query !== ''}
-		{#if bestResultGames.length !== 0}
+	{#if searchedGames.length !== 0 && $query !== ''}
+		{#if searchedGames.length !== 0}
 			<div class="sc flex flex-col w-66 max-h-80 content-start overflow-x-scroll my-2">
-				{#each bestResultGames as game (game.id)}
+				{#each searchedGames as game (game.id)}
 					<SearchCard id={game.id} title={game.name} image={game.background_image}/>
 				{/each}
 			</div>
@@ -145,7 +136,7 @@
 				</div>
 			</div>
 		{/if}
-	{:else if bestResultGames.length === 0}
+	{:else if searchedGames.length === 0}
 		<div class="grid place-content-center w-66 h-48 p-3 ">
 			<div class="h-full" in:scale={{duration: 200, start: 0.5}}>
 				<span class="hidden">{emptySearchIndex = Math.floor(Math.random() * emptySearchEmoticons.length)}</span>
