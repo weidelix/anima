@@ -4,30 +4,35 @@ export async function compressFiles(files: string[], width = 500, height = 400, 
 	let promise = new Promise<string[]>(async (resolve, reject) => {
 		let images: string[] = [];
 		let imageBlob: Blob[] = [];
-
-		for (let i = 0; i < files.length; i++) {
-			imageBlob.push(await (await fetch(files[i])).blob());
-		}
-
-		for (let i = 0; i < files.length; i++) {
-			new Compressor(imageBlob[i], {
-				mimeType: 'image/jpeg',
-				quality: quality,
-				width: width,
-				height: height,
+		
+		try {
+			for (let i = 0; i < files.length; i++) {
+				imageBlob.push(await (await fetch(files[i])).blob());
+			}
 	
-				success(res: Blob) {
-					images[i] = URL.createObjectURL(res);
-
-					if (images.length === files.length && !images.includes(undefined)) {
-						resolve(images);
+			for (let i = 0; i < files.length; i++) {
+				new Compressor(imageBlob[i], {
+					mimeType: 'image/jpeg',
+					quality: quality,
+					width: width,
+					height: height,
+		
+					success(res: Blob) {
+						images[i] = URL.createObjectURL(res);
+	
+						if (images.length === files.length && !images.includes(undefined)) {
+							resolve(images);
+						}
+					},
+					
+					error(err: any) {
+						alert(err);
 					}
-				},
-				
-				error(err: any) {
-					console.log(err);
-				}
-			});
+				});
+			}
+		}
+		catch {
+
 		}
 	});
 	
@@ -36,20 +41,25 @@ export async function compressFiles(files: string[], width = 500, height = 400, 
 
 export async function compress(file: string, width = 500, height = 400, quality = 0.6) {
 	let promise = new Promise<string>(async (resolve, reject) => {
-		new Compressor(await fetch(file).then(res => res.blob()), {
-			mimeType: 'image/jpeg',
-			quality: quality,
-			width: width,
-			height: height,
-
-			success(res: Blob) {
-				resolve(URL.createObjectURL(res));
-			},
-			
-			error(err: any) {
-				console.log(err);
-			}
-		});
+		try {
+			new Compressor(await (await fetch(file)).blob(), {
+				mimeType: 'image/jpeg',
+				quality: quality,
+				width: width,
+				height: height,
+	
+				success(res: Blob) {
+					resolve(URL.createObjectURL(res));
+				},
+				
+				error(err: any) {
+					alert(err);
+				}
+			});
+		}
+		catch {
+			resolve(null);
+		}
 	});
 
 	return promise;

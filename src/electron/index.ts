@@ -44,13 +44,12 @@ app.on('ready', () => {
   createWindow();
 
   session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
+   details.responseHeaders['Content-Security-Policy'] = [ "img-src 'self' https://media.rawg.io blob: data:" ];
     callback({
-      responseHeaders: {
-        ...details.responseHeaders,
-        'Content-Security-Policy': ["img-src 'self' https://media.rawg.io blob: data:"]
+        responseHeaders: details.responseHeaders
       }
-    })
-  })
+    );
+  });
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common

@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { fly } from 'svelte/transition'
+	import { fly, scale } from 'svelte/transition'
 
 	export let right: number;
 	export let top: number; 
+	export let base = true;
 
 	let panel: HTMLDivElement;
 
@@ -21,9 +22,9 @@
 	}
 </script>
 
-<div bind:this={panel} class="absolute" style="z-index: 9999;">
-	<div class="w-66 text-left text-white bg-sub-color rounded-xl shadow-xl"
-				transition:fly={{ duration: 150, y: -30 }}>
+<div bind:this={panel} class="absolute" style="z-index: 9999;" on:click|stopPropagation>
+	<div class="{base ? "text-left text-white bg-sub-color rounded-xl shadow-xl" : ''}"
+				transition:fly={{ duration: 200, y: -30 }}>
 		<slot/>
 	</div>
 </div>

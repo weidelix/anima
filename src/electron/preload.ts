@@ -1,4 +1,4 @@
-import { contextBridge, ipcRenderer } from 'electron';
+import { contextBridge, ipcRenderer, session, app } from 'electron';
 
 contextBridge.exposeInMainWorld('anima', {
 	search: async (name: string) => {

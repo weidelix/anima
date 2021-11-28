@@ -51,8 +51,7 @@
 </script>
 
 
-<!-- {#if !isOnline && !checkingConnection} -->
-{#if true && true}
+{#if !isOnline && !checkingConnection}
 	<div class="absolute top-0 left-0 flex flex-col flex-wrap justify-center content-center w-screen h-screen text-white bg-main-color">
 		<div class="flex justify-center">
 			<i class="fas fa-skull-crossbones text-4xl"></i>
@@ -69,24 +68,12 @@
 	{#if initalLoad}
 		<div class="absolute top-0 left-0 bg-main-color flex flex-col flex-wrap content-center 
 								justify-center text-white w-full h-full z-50 bg-center bg-no-repeat"
-				style="background-image: url('../anima_icon.png');
-							 background-size: 8rem;
-							 z-index: 99999"
+				style="z-index: 99999"
 				out:fade>
-			<h1 class="text-white text-4xl font-main mt-48">
+			<h1 class="text-white text-4xl font-main">
 				<span class="text-white">anima</span>
 			</h1>
-			<div class="flex justify-center animate-spin mt-10">
-				<i class="fas fa-circle-notch text-4xl"></i>
-			</div>
-		</div>
-	{:else}
-		<div class="w-full h-full bg-main-color flex flex-col flex-wrap content-center 
-								justify-center text-white z-50 bg-center bg-no-repeat">
-			<div class="flex justify-center animate-spin mt-10">
-				<i class="fas fa-circle-notch text-4xl"></i>
-			</div>
-		</div>
+		</div>		
 	{/if}
 {/if}
 

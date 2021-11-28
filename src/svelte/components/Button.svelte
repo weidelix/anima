@@ -2,7 +2,7 @@
 	import { createEventDispatcher } from 'svelte';
 
 	export let color: 'green' | 'red' | 'yellow' | 'blue' | 'white' = 'green';
-	export let bgColor: 'green' | 'red' | 'yellow' | 'blue' | 'transparent' | 'white' |  '' =  '';
+	export let bgColor = true;
 	export let rounded = true;
 
 	let classProp = '';
@@ -15,9 +15,9 @@
 							 {!classProp.includes('p-') ? 'p-3' : ''} 
 							 text-xs text-{color === 'white' ? color : color + '-400'} 
 							 hover:text-{color === 'white' ? color : color + '-400'} 
-							 bg-{bgColor !== '' 
-							 		? bgColor === 'white' || 'transparent' ? bgColor : bgColor + '-200'
-									: color === 'white' ? color : color + '-200'} 
+							 bg-{bgColor 
+							 		? color === 'white' ? color : color + '-200'
+									: 'transparent'} 
 							 bg-opacity-10 hover:bg-opacity-30 {rounded ? 'rounded-xl' : ''}
 							 transition {classProp}"
 				on:click={() => { dispatch('click') }}>

@@ -11,7 +11,7 @@
 	import CascadingImage from './CascadingImage.svelte';
 	import Button from '../components/Button.svelte';
 	import Tag from '../components/Tag.svelte';
-	import Compress from '../Compress';
+	import Compress from '../Compress'
 	import { details } from '../Page/Details.svelte';
 	import page from '../pager/page';
 	import { activeRoute } from '../pager/Router.svelte';
@@ -26,22 +26,18 @@
 	onMount(async () => {
 		if (banners.length === 0) {
 			let date = new Date();
-			let temp = (await window.anima.search({
+			banners = (await window.anima.search({
 				name: '', 
 				date: `${date.getFullYear()}-${date.getMonth()+1}-01,${date.getFullYear()}-${date.getMonth()+1}-30`
 			})).slice(0, 5);
 	
-			for (let j = 0; j < temp.length; j++) {
-				banners.push(await window.anima.getDetails(temp[j].id));
-				banners[j].background_image = await Compress.compress(temp[j].background_image, 1366, 736, 0.8);
+			for (let j = 0; j < banners.length; j++) {
+				banners[j] = await window.anima.getDetails(banners[j].id);
+				banners[j].background_image = await Compress.compress(banners[j].background_image, 1366, 736, 0.8);
 			}
-				
-			dispatch('ready');
-			change(0);
-		} else {
-			dispatch('ready');
-			change(0);
 		}
+		dispatch('ready');
+		change(0);
 	});
 	
 	async function change(value: number) {
@@ -71,9 +67,9 @@
 		 style="height: 90vh;">
 	{#if banners.length > 0}
 		{#key i}
-			<div class="absolute left-0 top-0 w-full h-full bg-top bg-cover bg-no-repeat" 
+			<div class="absolute left-0 top-0 w-full h-full bg-top bg-cover bg-no-repeat transform-gpu" 
 					 style="background-image: url('{banners[i].background_image}');
-									background-position: 50% {($scrollY) * 0.4}px;"
+									background-position: 0 {($scrollY) * 0.4}px;"
 					transition:fade>
 				<div class="bg-gradient-to-t from-main-color via-transparent w-full h-full">
 					<div class="bg-gradient-to-r from-main-color via-transparent w-full h-full">
