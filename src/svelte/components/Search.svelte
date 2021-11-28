@@ -7,12 +7,10 @@
 </script>
 
 <script lang="ts">
-	import { scale } from "svelte/transition";
 	import { cubicOut } from "svelte/easing";
 	import SearchCard from "../components/SearchCard.svelte";
 	import Button from './Button.svelte';
 	import { query } from '../App.svelte';
-	import Compress from '../Compress';
 	import { onDestroy } from "svelte";
 
 	const emptySearchMessages = [
@@ -36,20 +34,13 @@
 
 	async function search(name: string) {
 		if ($query !== '') {
-			
 			addToRecents(name);
 
-			// Delete previous blobs before searching 
-			for (let j = 0; j < searchedGames.length; j++) {
-				URL.revokeObjectURL(searchedGames[j].background_image);
-			}
-
 			searchedGames = await window.anima.search({name: $query});
+			searchedGames = searchedGames.map(game => {
+																									return { id: game.id, name: game.name };
+																								});
 			searchedGames = searchedGames.filter(game => game.name.toLowerCase().includes($query.toLowerCase()));
-			
-			for (let game of searchedGames) {
-				game.background_image = await Compress.compress(game.background_image, 400, 500);
-			}
 		}
 	}
 
@@ -83,29 +74,25 @@
 	}
 
 	onDestroy(() => {
-		for (let j = 0; j < searchedGames.length; j++) {
-			URL.revokeObjectURL(searchedGames[j].background_image);
-		}
-
 		searchedGames = [];
 	});
 
 	$: search($query);
 </script>
 
-<div class="w-80 h-full bg-main-color rounded-b-xl">
+<div class="sc w-80 h-full overflow-y-scroll bg-main-color rounded-b-xl">
 	{#if searchedGames.length !== 0 && $query !== ''}
 		{#if searchedGames.length !== 0}
-			<div class="sc flex flex-col w-66 max-h-80 content-start overflow-x-scroll my-2">
-				{#each searchedGames as game (game.id)}
-					<SearchCard id={game.id} title={game.name} image={game.background_image}/>
+			<div class="sc flex flex-col w-66 max-h-80 content-start my-2">
+				{#each searchedGames as game}
+					<SearchCard id={game.id} title={game.name}/>
 				{/each}
 			</div>
 		{/if}
 	{:else if $query === ''}
 		{#if $recentSearches.length === 0}
 			<div class="grid place-content-center p-3 w-66 h-48">
-				<div class="flex flex-wrap h-full" transition:scale={{duration: 200, start: 0.5}}>
+				<div class="flex flex-wrap h-full">
 					<i class="fas fa-box-open self-center text-white text-2xl"></i>
 					<div class="text-white text-lg mx-2">No recent searches</div>
 				</div>
@@ -138,7 +125,7 @@
 		{/if}
 	{:else if searchedGames.length === 0}
 		<div class="grid place-content-center w-66 h-48 p-3 ">
-			<div class="h-full" in:scale={{duration: 200, start: 0.5}}>
+			<div class="h-full">
 				<span class="hidden">{emptySearchIndex = Math.floor(Math.random() * emptySearchEmoticons.length)}</span>
 				<div class="text-white text-center text-2xl my-2">
 					{emptySearchEmoticons[emptySearchIndex]}

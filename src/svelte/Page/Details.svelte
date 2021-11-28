@@ -32,11 +32,12 @@
 </script>
 
 <script lang="ts">
-	import { onMount, createEventDispatcher } from 'svelte';
+	import { onMount, createEventDispatcher, onDestroy } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import User from '../User';
 	import page from '../pager/page';
 	import Tag from '../components/Tag.svelte';
+	import Compress from '../Compress';
 
 	const dispatch = createEventDispatcher();
 	const TITLE = 2;
@@ -48,7 +49,7 @@
 	let lessDesc = '';
 	let moreDesc = '';
 	let showMore = false;
-	let platforms: any[];
+	let platforms: any[] = [];
 	let inLibrary = false;
 	let inQueue = false;
 
@@ -61,12 +62,12 @@
 	async function getGameDetails() {
 		gameData = await window.anima.getDetails($details.id);
 
-		platforms = gameData.parent_platforms;
-		let score = gameData.metacritic;
+		if ($details.image === '' || $details.image === null) {
+			$details.image = await Compress.compress(gameData.background_image);
+			gameData.background_image_additional = await Compress.compress(gameData.background_image_additional);
+		}
 
-		if 			(score >= 0 && score <= 49) metaColor = 'red'; 
-		else if (score >= 50 && score <= 74) metaColor = 'yellow'; 
-		else if (score >= 75 && score <= 100) metaColor = 'green';
+		platforms = gameData.parent_platforms;
 
 		[lessDesc] = gameData.description.split('</p>');
 		moreDesc = gameData.description.split(lessDesc)[1];
@@ -79,11 +80,15 @@
 	onMount(async () => {
 		inLibrary = User.inLibrary($details.id);
 		inQueue = User.inQueue($details.id);
-		
+
 		dispatch('open');
 		getGameDetails();
 	});
 
+	onDestroy(() => {
+		URL.revokeObjectURL($details.image);
+		URL.revokeObjectURL(gameData.background_image_additional);
+	})
 </script>
 
 <svelte:body on:keydown={closeDetailsPage}/>
@@ -109,7 +114,7 @@
 		<div class="flex flex-col h-full p-5 bg-gradient-to-t from-main-color via-main-color">
 			<div class="flex flex-cols w-full">
 				<div class="bg-cover bg-top bg-white rounded-xl w-56 h-72" 
-						 style="background-image: url({$details.image === '' ? gameData.background_image : $details.image})"
+						 style="background-image: url({$details.image})"
 						 in:receive={{key: $details.transition ? IMG + $details.id + $details.unique : null}}
 						 out:send={{key:  $details.transition ? IMG + $details.id + $details.unique : null}}>
 				</div>
@@ -197,7 +202,7 @@
 						Available on
 					</div>
 					<div class="flex flex-wrap content-center space-x-2 mx-4" style="font-size: 0.7rem;">
-						{#if gameData.parent_platforms}
+						{#if platforms.length > 0}
 							<Tag class="{!(platforms.some(el => el.platform.slug.includes("xbox"))) ? 'hidden' : ''}
 												bg-xbox">
 							<i class="fab fa-xbox"></i>
