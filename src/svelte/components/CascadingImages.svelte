@@ -26,16 +26,28 @@
 	onMount(async () => {
 		if (banners.length === 0) {
 			let date = new Date();
+			let year = date.getFullYear();
+			let month = ('0' + (date.getMonth()+1)).slice(-2);
+			
+			if (month === '01') {
+				year--;
+				month = '12';
+			}
+			
+			let dateStr = `${year}-${month}-01,${year}-${month}-30`;
+			
 			banners = (await window.anima.search({
 				name: '', 
-				date: `${date.getFullYear()}-${date.getMonth()+1}-01,${date.getFullYear()}-${date.getMonth()+1}-30`
+				date: dateStr
 			})).slice(0, 5);
-	
+
 			for (let j = 0; j < banners.length; j++) {
 				banners[j] = await window.anima.getDetails(banners[j].id);
-				banners[j].background_image = await Compress.compress(banners[j].background_image, 1366, 736, 0.8);
+				// banners[j].background_image = await Compress.compress(banners[j].background_image, 1366, 736, 0.8);
 			}
+			console.log(banners);
 		}
+
 		dispatch('ready');
 		change(0);
 	});
@@ -46,7 +58,7 @@
 		i = value;
 
 		if (i === banners.length) {
-			change(0);
+			i = 0;
 		}
 
 		timeout = setTimeout(() => {
@@ -84,7 +96,9 @@
 							<div class="flex space-x-1 text-xs" 
 								 	 in:fly={{ y: -20, delay: 0 }} out:fly={{ y: 20, delay: 0}}>
 								<span class="inline-block align-middle text-base">
-									{banners[i].developers[0].name}&nbsp • &nbsp;  
+									{#if banners[i].developers.length > 0}
+										{banners[i].developers[0].name}&nbsp • &nbsp;
+									{/if}  
 								</span>
 								<Tag class="{!(banners[i].parent_platforms.some(el => el.platform.slug.includes("xbox"))) ? 'hidden' : ''}
 									bg-xbox">

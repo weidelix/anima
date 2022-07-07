@@ -7,6 +7,8 @@ import '../../res/anima_icon.png';
 declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 
+const key = 'c41a6a0a96324ff58a8a57fe7c1951c3';
+
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) { // eslint-disable-line global-require
   app.quit();
@@ -79,7 +81,7 @@ app.whenReady().then(() => {
   // Search for game and get top result
   ipcMain.handle('search', async (event, args) => {    
     let promise = new Promise((resolve, reject) => {
-      const request = net.request(`https://api.rawg.io/api/games?key=7cfd341fc762465493aef28bb5039375&search=${args.name}&dates=${args.date}`);
+      const request = net.request(`https://api.rawg.io/api/games?key=${key}&search=${args.name}&dates=${args.date}`);
       let chunks : Buffer[] = [];
       
       request.on('response', (response) => {      
@@ -119,7 +121,7 @@ app.whenReady().then(() => {
   // Get details for game
   ipcMain.handle('get-details', async (event, args) => {    
     let promise = new Promise(async (resolve, reject) => {
-      const request = net.request(`https://api.rawg.io/api/games/${args}?key=7cfd341fc762465493aef28bb5039375&`);
+      const request = net.request(`https://api.rawg.io/api/games/${args}?key=${key}`);
 
       let chunks : Buffer[] = [];
       
@@ -140,7 +142,8 @@ app.whenReady().then(() => {
                 rating: data.rating,
                 parent_platforms: data.parent_platforms,
                 description: data.description,
-                developers: data.developers
+                developers: data.developers,
+                website: data.website
             });
           }
           catch (error) {

@@ -28,8 +28,19 @@
 
 	onMount(async () => {
 		if (popular.length === 0 && releases.length === 0) {
+			let date = new Date();
+			let year = date.getFullYear();
+			let month = ('0' + (date.getMonth()+1)).slice(-2);
+			
+			if (month === '01') {
+				year--;
+				month = '12';
+			}
+
+			let dateStr = `${year}-${month}-01,${year}-${month}-30`
+
 			popular = await window.anima.search({name: ''});
-			releases = await window.anima.search({name: '', date: '2021-01-01,2021-12-31'});
+			releases = await window.anima.search({name: '', date: dateStr});
 	
 			for (let game of popular) {
 				game.background_image = await Compress.compress(game.background_image);
@@ -107,7 +118,7 @@
 					</div>
 				</div>
 			</div>
-		{/if}
+		{/if} -->
 	</Loading>
 </div>
 

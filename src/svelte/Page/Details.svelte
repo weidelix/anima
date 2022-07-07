@@ -86,7 +86,7 @@
 	});
 
 	onDestroy(() => {
-		URL.revokeObjectURL($details.image);
+		// URL.revokeObjectURL($details.image);
 		URL.revokeObjectURL(gameData.background_image_additional);
 	})
 </script>
@@ -177,13 +177,15 @@
 						{/if}
 					</div>
 				</div>
-				<div class="flex flex-wrap flex-col justify-center transition duration-400 text-white hover:text-blue-400 hover:bg-blue-200 hover:bg-opacity-20 rounded-xl w-full h-full p-2"
-							on:click={() => window.anima.openWebsite(gameData.website)}>
-					<i class="fas fa-globe-americas text-2xl self-center"></i>
-					<div class="text-xs text-center my-1">
-						Visit Website
+				{#if gameData.website !== undefined || gameData.website !== ''}
+					<div class="flex flex-wrap flex-col justify-center transition duration-400 text-white hover:text-blue-400 hover:bg-blue-200 hover:bg-opacity-20 rounded-xl w-full h-full p-2"
+								on:click={() => window.anima.openWebsite(gameData.website)}>
+						<i class="fas fa-globe-americas text-2xl self-center"></i>
+						<div class="text-xs text-center my-1">
+							Visit Website
+						</div>
 					</div>
-				</div>
+				{/if}
 			</div>
 			<div class="flex flex-col justify-between">
 				<div class="text-sm text-left overflow-hidden">
